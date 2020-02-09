@@ -3,6 +3,7 @@
   import Radio from "./components/Radio.svelte";
   import AnimatedButton from "./components/AnimatedButton.svelte";
   import Input from "./components/Input.svelte";
+  import Accordion from "./components/Accordion.svelte";
   let checked = true;
   let disabled = false;
   let loading;
@@ -41,25 +42,35 @@
 <style>
   main {
     text-align: left;
-    padding: 16px;
-    max-width: 240px;
+    padding: 0 16px;
+    width: 100%;
     margin: 0 auto;
     color: #333;
+    display: flex;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   }
 
   h1 {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     color: #ff3e00;
     text-transform: uppercase;
     font-size: 1em;
     font-weight: 400;
-    margin: 0 0 24px;
+    margin: 16px;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 20px;
+    margin: 8px;
   }
 
   div.wrap {
-    max-width: 300px;
+    width: 300px;
     height: 400px;
+    margin: 0 16px 0 0;
     background-color: #e2e2e2;
     display: flex;
     flex-direction: column;
@@ -76,8 +87,8 @@
   }
 </style>
 
+<h1>Playground</h1>
 <main>
-  <h1>Playground</h1>
   <div class="wrap">
     <div bind:this={content} class="content">
       <Checkbox bind:checked>visible</Checkbox>
@@ -88,6 +99,7 @@
       <Radio name="a" bind:group {error} value="3">option 3</Radio>
       <Input bind:elem={input} {disabled} error={err} bind:value postfix="$" />
       <Input fluid {disabled} error={err} bind:value postfix="$" />
+
     </div>
     <AnimatedButton
       {disabled}
@@ -98,5 +110,16 @@
       show={checked}>
       Click me !
     </AnimatedButton>
+  </div>
+  <div class="wrap">
+    <Accordion>
+      <span slot="header">Named slot !</span>
+      <p>test</p>
+      <p>test</p>
+    </Accordion>
+    <Accordion>
+      <p>test</p>
+      <p>test</p>
+    </Accordion>
   </div>
 </main>

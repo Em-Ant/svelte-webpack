@@ -107,7 +107,7 @@
     align-items: flex-end;
   }
   span.error-msg.in {
-    height: 16px;
+    height: 18px;
   }
   span.error-msg.disabled {
     color: #999;
