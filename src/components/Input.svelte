@@ -5,6 +5,7 @@
   export let disabled = undefined;
   export let name = undefined;
   export let id = undefined;
+  export let fluid = undefined;
   export let attrs = {};
 </script>
 
@@ -18,10 +19,12 @@
     align-items: center;
     max-width: 180px;
   }
+  div.inner.fluid {
+    max-width: 100%;
+  }
   div.field {
     display: flex;
     align-items: center;
-    max-width: 180px;
     height: 30px;
     box-sizing: border-box;
     flex-grow: 1;
@@ -110,7 +113,7 @@
 </style>
 
 <div class="outer">
-  <div class="inner">
+  <div class="inner" class:fluid>
     <div class="field" class:error={!!error} class:disabled>
       <input {disabled} {name} {id} {...attrs} bind:value on:change on:click />
       {#if postfix}

@@ -18,7 +18,7 @@
     outline: none;
     transition: box-shadow 0.2s ease-out;
     outline: none;
-    display: flex;
+    display: inline-flex;
     position: relative;
     align-items: center;
     font-family: "Open Sans", sans-serif;
@@ -51,7 +51,7 @@
     background-color: #fff;
     box-sizing: border-box;
     border: 1px solid #282828;
-    display: inline-flex;
+    display: flex;
     flex-grow: 0;
     flex-shrink: 0;
     align-items: center;
@@ -67,23 +67,21 @@
   input + span.icon:after {
     content: "";
     display: block;
-    height: 0;
-    width: 0;
+    height: 12px;
+    width: 12px;
     border-radius: 50%;
     background-color: white;
     transition: all 0.15s ease-in-out;
+    transform: scale(0.1);
   }
   input:checked + span.icon:after {
-    height: 12px;
-    width: 12px;
+    transform: scale(1);
   }
   input[aria-invalid="true"] + span.icon {
     border: 2px solid #bb1b18;
     background-color: white;
   }
   input[aria-invalid="true"]:checked + span.icon:after {
-    height: 12px;
-    width: 12px;
     background-color: #bb1b18;
   }
   input:disabled + span.icon {
@@ -98,21 +96,23 @@
   }
 </style>
 
-<label class:disabled>
-  <input
-    {...attrs}
-    {disabled}
-    {id}
-    {value}
-    {name}
-    checked={group && group === value}
-    on:change={onChange}
-    on:change
-    on:click
-    aria-invalid={error}
-    type="radio" />
-  <span class="icon" />
-  <span>
-    <slot />
-  </span>
-</label>
+<div>
+  <label class:disabled>
+    <input
+      {...attrs}
+      {disabled}
+      {id}
+      {value}
+      {name}
+      checked={group && group === value}
+      on:change={onChange}
+      on:change
+      on:click
+      aria-invalid={error}
+      type="radio" />
+    <span class="icon" />
+    <span>
+      <slot />
+    </span>
+  </label>
+</div>

@@ -76,7 +76,7 @@
       <Radio {disabled} name="a" bind:group value="2">option 2</Radio>
       <Radio name="a" bind:group {error} value="3">option 3</Radio>
       <Input {disabled} error={err} bind:value postfix="$" />
-      <Input {disabled} error={err} bind:value postfix="$" />
+      <Input fluid {disabled} error={err} bind:value postfix="$" />
     </div>
     <AnimatedButton
       {disabled}

@@ -22,7 +22,7 @@
     outline: none;
     transition: box-shadow 0.2s ease-out;
     outline: none;
-    display: flex;
+    display: inline-flex;
     position: relative;
     align-items: center;
     font-family: "Open Sans", sans-serif;
@@ -100,33 +100,35 @@
   }
 </style>
 
-<label class:disabled>
-  <input
-    {...attrs}
-    {disabled}
-    {id}
-    bind:checked
-    on:change
-    on:click
-    aria-invalid={error}
-    type="checkbox" />
-  <span class="icon">
-    <svg
-      version="1.1"
-      height="24"
-      width="24"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M 6,13.7857 9.25,17 19,8"
-        fill="none"
-        stroke="#fff"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2.6" />
-    </svg>
-  </span>
-  <span>
-    <slot />
-  </span>
-</label>
+<div>
+  <label class:disabled>
+    <input
+      {...attrs}
+      {disabled}
+      {id}
+      bind:checked
+      on:change
+      on:click
+      aria-invalid={error}
+      type="checkbox" />
+    <span class="icon">
+      <svg
+        version="1.1"
+        height="24"
+        width="24"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M 6,13.7857 9.25,17 19,8"
+          fill="none"
+          stroke="#fff"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.6" />
+      </svg>
+    </span>
+    <span>
+      <slot />
+    </span>
+  </label>
+</div>
