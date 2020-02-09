@@ -1,6 +1,4 @@
 <script>
-  import { createEventDispatcher } from "svelte";
-  const dispatch = createEventDispatcher();
   export let disabled = undefined;
   export let error = undefined;
   export let id = undefined;

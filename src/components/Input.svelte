@@ -58,7 +58,8 @@
     border: none;
     margin: 0;
     flex-grow: 1;
-    width: 100%;
+    width: 0px;
+    flex-shrink: 1;
     padding: 6px 0 6px 6px;
     display: inline-block;
     background-color: transparent;

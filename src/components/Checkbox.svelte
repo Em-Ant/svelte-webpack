@@ -3,6 +3,7 @@
   export let checked = undefined;
   export let error = undefined;
   export let id = undefined;
+  export let name = undefined;
   export let attrs = {};
 </script>
 
@@ -106,6 +107,7 @@
       {...attrs}
       {disabled}
       {id}
+      {name}
       bind:checked
       on:change
       on:click

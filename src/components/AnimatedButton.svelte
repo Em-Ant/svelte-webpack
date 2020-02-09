@@ -54,6 +54,7 @@
     display: flex;
     background-color: #1e838f;
     justify-content: center;
+    align-items: center;
     color: white;
     margin: 0;
     flex-grow: 1;
