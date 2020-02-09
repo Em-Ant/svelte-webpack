@@ -6,6 +6,7 @@
   export let success = undefined;
   export let type = "button";
   export let attrs = {};
+  export let elem = undefined;
 </script>
 
 <style>
@@ -92,7 +93,7 @@
 
 <div class="outer" class:show>
   <div class="inner">
-    <button on:click {disabled} {id} {type} {...attrs}>
+    <button bind:this={elem} on:click {disabled} {id} {type} {...attrs}>
       {#if loading}
         <svg
           class="loader"

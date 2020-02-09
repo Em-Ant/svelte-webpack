@@ -7,6 +7,7 @@
   export let id = undefined;
   export let fluid = undefined;
   export let attrs = {};
+  export let elem = undefined;
 </script>
 
 <style>
@@ -116,7 +117,15 @@
 <div class="outer">
   <div class="inner" class:fluid>
     <div class="field" class:error={!!error} class:disabled>
-      <input {disabled} {name} {id} {...attrs} bind:value on:change on:click />
+      <input
+        bind:this={elem}
+        {disabled}
+        {name}
+        {id}
+        {...attrs}
+        bind:value
+        on:change
+        on:click />
       {#if postfix}
         <span class="postfix">{postfix}</span>
       {/if}

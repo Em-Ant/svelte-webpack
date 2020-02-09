@@ -6,6 +6,7 @@
   export let name = undefined;
   export let group = undefined;
   export let attrs = {};
+  export let elem = undefined;
   function onChange(e) {
     if (e.target.checked) group = e.target.value;
   }
@@ -102,6 +103,7 @@
       {id}
       {value}
       {name}
+      bind:this={elem}
       checked={group && group === value}
       on:change={onChange}
       on:change

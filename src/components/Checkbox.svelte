@@ -5,6 +5,7 @@
   export let id = undefined;
   export let name = undefined;
   export let attrs = {};
+  export let elem = undefined;
 </script>
 
 <style>
@@ -108,6 +109,7 @@
       {disabled}
       {id}
       {name}
+      bind:this={elem}
       bind:checked
       on:change
       on:click

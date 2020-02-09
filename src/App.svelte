@@ -11,6 +11,8 @@
   let group;
   let value = "";
 
+  let input;
+
   $: if (!checked)
     setTimeout(function() {
       success = false;
@@ -23,6 +25,7 @@
     setTimeout(function() {
       loading = false;
       success = true;
+      input && input.focus();
     }, 1500);
   }
 </script>
@@ -75,7 +78,7 @@
       <Radio name="a" bind:group value="1">option 1</Radio>
       <Radio {disabled} name="a" bind:group value="2">option 2</Radio>
       <Radio name="a" bind:group {error} value="3">option 3</Radio>
-      <Input {disabled} error={err} bind:value postfix="$" />
+      <Input bind:elem={input} {disabled} error={err} bind:value postfix="$" />
       <Input fluid {disabled} error={err} bind:value postfix="$" />
     </div>
     <AnimatedButton
