@@ -13,10 +13,18 @@
 
   let input;
 
-  $: if (!checked)
+  let content;
+  let scrolling;
+
+  $: if (!checked) {
     setTimeout(function() {
       success = false;
     }, 500);
+  } else {
+    setTimeout(function() {
+      scrolling = content && content.scrollHeight > content.clientHeight;
+    }, 200);
+  }
 
   $: err = error || value === "error" ? "error message test" : "";
 
@@ -71,7 +79,7 @@
 <main>
   <h1>Playground</h1>
   <div class="wrap">
-    <div class="content">
+    <div bind:this={content} class="content">
       <Checkbox bind:checked>visible</Checkbox>
       <Checkbox bind:checked={disabled}>disabled</Checkbox>
       <Checkbox error bind:checked={error}>error</Checkbox>
@@ -85,6 +93,7 @@
       {disabled}
       {loading}
       {success}
+      elevate={scrolling}
       on:click={click}
       show={checked}>
       Click me !

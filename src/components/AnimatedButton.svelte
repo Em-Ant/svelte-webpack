@@ -4,6 +4,7 @@
   export let id = undefined;
   export let loading = undefined;
   export let success = undefined;
+  export let elevate = undefined;
   export let type = "button";
   export let attrs = {};
   export let elem = undefined;
@@ -35,11 +36,15 @@
     position: relative;
     flex-shrink: 0;
     flex-grow: 0;
-    transition: height 0.2s cubic-bezier(0.47, 0, 0.745, 0.715);
+    transition: height 0.2s cubic-bezier(0.47, 0, 0.745, 0.715),
+      box-shadow 0.2s ease-in;
     font-family: "Open Sans", sans-serif;
   }
   div.outer.show {
     height: 60px;
+  }
+  div.outer.show.elevate {
+    box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.25);
   }
   div.inner {
     width: 100%;
@@ -91,7 +96,7 @@
   }
 </style>
 
-<div class="outer" class:show>
+<div class="outer" class:show class:elevate>
   <div class="inner">
     <button bind:this={elem} on:click {disabled} {id} {type} {...attrs}>
       {#if loading}
