@@ -49,13 +49,14 @@
   }
   button {
     font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
     display: flex;
     background-color: #1e838f;
     justify-content: center;
     color: white;
     margin: 0;
     flex-grow: 1;
-    font-weight: 400;
     cursor: pointer;
     outline: none;
     border: none;

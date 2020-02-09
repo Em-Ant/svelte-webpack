@@ -1,8 +1,8 @@
 <script>
-  import Checkbox from "./Checkbox.svelte";
-  import Radio from "./Radio.svelte";
-  import AnimatedButton from "./AnimatedButton.svelte";
-  import Input from "./Input.svelte";
+  import Checkbox from "./components/Checkbox.svelte";
+  import Radio from "./components/Radio.svelte";
+  import AnimatedButton from "./components/AnimatedButton.svelte";
+  import Input from "./components/Input.svelte";
   let checked = true;
   let disabled = false;
   let loading;
