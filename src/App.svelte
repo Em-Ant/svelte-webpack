@@ -37,6 +37,8 @@
       input && input.focus();
     }, 1500);
   }
+  let o = true;
+  let ctx = [];
 </script>
 
 <style>
@@ -112,12 +114,12 @@
     </AnimatedButton>
   </div>
   <div class="wrap">
-    <Accordion>
+    <Accordion bind:ctx>
       <span slot="header">Named slot !</span>
       <p>test</p>
       <p>test</p>
     </Accordion>
-    <Accordion>
+    <Accordion bind:ctx>
       <p>test</p>
       <p>test</p>
     </Accordion>

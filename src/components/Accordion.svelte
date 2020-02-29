@@ -1,6 +1,14 @@
 <script>
+  import { onMount } from "svelte";
   export let open = false;
-
+  export let ctx = undefined;
+  let _this;
+  $: {
+    if (ctx) {
+      const el = ctx.find(n => n && n.node === _this);
+      if (el) open = el.open;
+    }
+  }
   function scroll(node, { delay = 0, duration = 200 }) {
     const height = node.scrollHeight;
     return {
@@ -9,6 +17,25 @@
       css: t => `height: ${t * height}px;`
     };
   }
+  onMount(() => {
+    if (ctx && Array.isArray(ctx)) {
+      ctx.push({ node: _this, open });
+    }
+    return () => {
+      if (ctx && Array.isArray(ctx)) {
+        const i = ctx.findIndex(n => n.node === this);
+        if (i > -1) ctx.splice(i, 1);
+      }
+    };
+  });
+  const handleClick = () => {
+    open = !open;
+    if (ctx && Array.isArray(ctx)) {
+      ctx = ctx.map((n = {}) =>
+        n.node === _this ? { ...n, open } : { ...n, open: false }
+      );
+    }
+  };
 </script>
 
 <style>
@@ -88,11 +115,16 @@
   }
   button:hover > span.signal,
   button.open > span.signal {
-    width: 4px;
+    width: 2px;
   }
 </style>
 
-<button class:open type="button" on:click on:click={() => (open = !open)}>
+<button
+  bind:this={_this}
+  class:open
+  type="button"
+  on:click
+  on:click={handleClick}>
   <span class="signal" />
   <slot name="header">Click me !</slot>
   <span class="arrow">
@@ -124,6 +156,6 @@
 </button>
 {#if open}
   <div transition:scroll class="content">
-    <slot />
+    <slot {ctx} />
   </div>
 {/if}

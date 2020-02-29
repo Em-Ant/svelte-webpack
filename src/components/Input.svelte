@@ -8,11 +8,19 @@
   export let fluid = undefined;
   export let attrs = {};
   export let elem = undefined;
+  function scroll(node, { delay = 50, duration = 100 }) {
+    const height = node.scrollHeight;
+    return {
+      delay,
+      duration,
+      css: t => `height: ${t * height}px;`
+    };
+  }
 </script>
 
 <style>
   div.outer {
-    min-height: 52px;
+    min-height: 54px;
     font-family: "Open Sans", sans-serif;
   }
   div.inner {
@@ -100,14 +108,10 @@
     color: #bb1b18;
     font-size: 12px;
     display: block;
-    padding-top: 1px;
+    padding: 0;
     overflow: hidden;
-    height: 0;
-    transition: all 0.15s ease-in-out 0.05s;
+    padding: 1px 0 2px;
     align-items: flex-end;
-  }
-  span.error-msg.in {
-    height: 18px;
   }
   span.error-msg.disabled {
     color: #999;
@@ -144,5 +148,7 @@
       </svg>
     </span>
   </div>
-  <span class:disabled class:in={!!error} class="error-msg">{error}</span>
+  {#if error}
+    <span transition:scroll class:disabled class="error-msg">{error}</span>
+  {/if}
 </div>
