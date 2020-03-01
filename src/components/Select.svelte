@@ -52,6 +52,13 @@
     active = undefined;
     open = false;
   }
+  async function selectActive(e) {
+    e && e.preventDefault();
+    value = active;
+    active = undefined;
+    await tick;
+    open = false;
+  }
   function handleKeyPress(e) {
     switch (e.code) {
       case "ArrowRight":
@@ -67,7 +74,7 @@
       case "Enter":
       case "Space":
         e.preventDefault();
-        if (active) value = active;
+        if (active) return selectActive();
         toggle();
         break;
       default:
@@ -277,17 +284,13 @@
     </span>
   </div>
   {#if open}
-    <div class:fluid in:enter out:enter={{ delay: 100 }} class="options">
+    <div class:fluid in:enter out:enter={{ delay: 150 }} class="options">
       {#each options as opt (opt && (opt.key || opt.value || opt))}
         <p
           class:selected={opt === value}
           class:active={opt === active}
           on:mouseenter|preventDefault={() => (active = opt)}
-          on:mousedown|preventDefault={async () => {
-            value = opt;
-            await tick;
-            open = false;
-          }}>
+          on:mousedown={selectActive}>
           {opt && (opt.name || opt)}
         </p>
       {/each}
