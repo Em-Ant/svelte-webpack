@@ -40,9 +40,7 @@
       input && input.focus();
     }, 1500);
   }
-  let o = true;
   let ctx = [];
-  $: console.log(ctx);
 </script>
 
 <style>
@@ -73,7 +71,8 @@
     margin: 8px;
   }
 
-  div.wrap {
+  div.wrap,
+  form.wrap {
     width: 300px;
     height: 400px;
     margin: 0 16px 0 0;
@@ -95,28 +94,35 @@
 
 <h1>Playground</h1>
 <main>
-  <div class="wrap">
+  <form class="wrap" on:submit|preventDefault>
     <div bind:this={content} class="content">
-      <Checkbox bind:checked>visible</Checkbox>
-      <Checkbox bind:checked={disabled}>disabled</Checkbox>
-      <Checkbox error bind:checked={error}>error</Checkbox>
-      <Radio name="a" bind:group value="1">option 1</Radio>
-      <Radio {disabled} name="a" bind:group value="2">option 2</Radio>
-      <Radio name="a" bind:group {error} value="3">option 3</Radio>
-      <Select {options} name="select" {disabled} error={err} />
-      <Input bind:elem={input} {disabled} error={err} bind:value postfix="$" />
-      <Input fluid {disabled} error={err} bind:value postfix="$" />
+      <Checkbox name="c1" bind:checked>visible</Checkbox>
+      <Checkbox name="c2" bind:checked={disabled}>disabled</Checkbox>
+      <Checkbox name="c3" error bind:checked={error}>error</Checkbox>
+      <Radio name="r" bind:group value="1">option 1</Radio>
+      <Radio {disabled} name="r" bind:group value="2">option 2</Radio>
+      <Radio name="r" bind:group {error} value="3">option 3</Radio>
+      <Select {options} name="s" {disabled} error={err} />
+      <Input
+        name="i1"
+        bind:elem={input}
+        {disabled}
+        error={err}
+        bind:value
+        postfix="$" />
+      <Input name="i2" fluid {disabled} error={err} bind:value postfix="$" />
     </div>
     <AnimatedButton
       {disabled}
       {loading}
       {success}
+      type="submit"
       elevate={scrolling}
       on:click={click}
       show={checked}>
       Click me !
     </AnimatedButton>
-  </div>
+  </form>
   <div class="wrap">
     <Accordion bind:ctx>
       <span slot="header">Named slot !</span>

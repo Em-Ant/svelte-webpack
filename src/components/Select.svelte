@@ -17,6 +17,63 @@
       css: t => `height: ${t * height}px; overflow-y: hidden;`
     };
   }
+  let active;
+  function next() {
+    if (!options.length) return;
+    if (active === undefined) {
+      value ? (active = value) : (active = options[0]);
+      return;
+    }
+    const i = options.indexOf(active);
+    i === options.length - 1
+      ? (active = options[0])
+      : (active = options[i + 1]);
+  }
+  function prev(index) {
+    if (!options.length) return null;
+    if (active === undefined) {
+      value ? (active = value) : (active = options[0]);
+      return;
+    }
+    const i = options.indexOf(active);
+    i === 0
+      ? (active = options[options.length - 1])
+      : (active = options[i - 1]);
+  }
+  function toggle() {
+    if (open) {
+      active = undefined;
+    } else {
+      active = value;
+    }
+    open = !open;
+  }
+  function close() {
+    active = undefined;
+    open = false;
+  }
+  function handleKeyPress(e) {
+    switch (e.code) {
+      case "ArrowRight":
+      case "ArrowDown":
+        e.preventDefault();
+        next();
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        e.preventDefault();
+        prev();
+        break;
+      case "Enter":
+      case "Space":
+        e.preventDefault();
+        if (active) value = active;
+        toggle();
+        break;
+      default:
+        return;
+    }
+  }
 </script>
 
 <style>
@@ -126,8 +183,11 @@
     top: 34px;
     border: 1px solid #aaa;
     box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.3);
-    max-height: 500px;
+    max-height: 250px;
     overflow-y: auto;
+  }
+  div.options.fluid {
+    max-width: 100%;
   }
   div.options > p {
     z-index: 3;
@@ -140,13 +200,13 @@
     cursor: pointer;
     transition: background-color 0.1s ease-in-out;
   }
-  div.options > p:hover {
+  div.options > p.active {
     background-color: #eee;
   }
   div.options > p.selected {
     background-color: rgba(130, 204, 211, 0.4);
   }
-  div.options > p.selected:hover {
+  div.options > p.selected.active {
     background-color: rgba(130, 204, 211, 0.5);
   }
   span.error-msg {
@@ -172,10 +232,7 @@
       class:error
       type="button"
       on:click
-      on:click|preventDefault={() => {
-        open = !open;
-        elem.focus();
-      }}
+      on:click|preventDefault={toggle}
       on:mousedown|preventDefault={() => {
         elem.focus();
       }}>
@@ -184,10 +241,11 @@
         {name}
         {...attrs}
         {disabled}
-        on:blur={() => (open = false)}
+        on:blur={close}
         bind:this={elem}
         readonly
-        value={value && (value.name || value)} />
+        value={value && (value.name || value)}
+        on:keydown={handleKeyPress} />
       <span class="icon" class:open>
         <svg
           width="12"
@@ -219,10 +277,12 @@
     </span>
   </div>
   {#if open}
-    <div in:enter out:enter={{ delay: 100 }} class="options">
+    <div class:fluid in:enter out:enter={{ delay: 100 }} class="options">
       {#each options as opt (opt && (opt.key || opt.value || opt))}
         <p
           class:selected={opt === value}
+          class:active={opt === active}
+          on:mouseenter|preventDefault={() => (active = opt)}
           on:mousedown|preventDefault={async () => {
             value = opt;
             await tick;
