@@ -73,6 +73,10 @@
     display: inline-block;
     background-color: transparent;
     border-radius: 3px 0 0 3px;
+    font-size: 14px;
+    line-height: 14px;
+    color: #282828;
+    font-family: inherit;
   }
   input:disabled {
     color: #999;

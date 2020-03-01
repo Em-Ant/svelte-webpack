@@ -4,6 +4,7 @@
   import AnimatedButton from "./components/AnimatedButton.svelte";
   import Input from "./components/Input.svelte";
   import Accordion from "./components/Accordion.svelte";
+  import Select from "./components/Select.svelte";
   let checked = true;
   let disabled = false;
   let loading;
@@ -16,6 +17,8 @@
 
   let content;
   let scrolling;
+
+  let options = ["option 1", "option 2", "option 3", "option 4"];
 
   $: if (!checked) {
     setTimeout(function() {
@@ -39,6 +42,7 @@
   }
   let o = true;
   let ctx = [];
+  $: console.log(ctx);
 </script>
 
 <style>
@@ -99,9 +103,9 @@
       <Radio name="a" bind:group value="1">option 1</Radio>
       <Radio {disabled} name="a" bind:group value="2">option 2</Radio>
       <Radio name="a" bind:group {error} value="3">option 3</Radio>
+      <Select {options} name="select" {disabled} error={err} />
       <Input bind:elem={input} {disabled} error={err} bind:value postfix="$" />
       <Input fluid {disabled} error={err} bind:value postfix="$" />
-
     </div>
     <AnimatedButton
       {disabled}
