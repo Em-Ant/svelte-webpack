@@ -5,7 +5,8 @@
   import Input from "./components/Input.svelte";
   import Accordion from "./components/Accordion.svelte";
   import Select from "./components/Select.svelte";
-  let checked = true;
+  import Alert from "./components/Alert.svelte";
+  let checked = false;
   let disabled = false;
   let loading;
   let success;
@@ -80,6 +81,9 @@
     display: flex;
     flex-direction: column;
   }
+  .wrap.pad {
+    padding: 8px;
+  }
   div.content {
     flex-grow: 1;
     padding: 8px;
@@ -90,13 +94,19 @@
       max-width: none;
     }
   }
+  div.alerts {
+    margin: 8px 0;
+  }
+  div.alerts > :global(div.wrap:not(:last-of-type)) {
+    margin-bottom: 8px;
+  }
 </style>
 
 <h1>Playground</h1>
 <main>
   <form class="wrap" on:submit|preventDefault>
     <div bind:this={content} class="content">
-      <Checkbox name="c1" bind:checked>visible</Checkbox>
+      <Checkbox {disabled} name="c1" bind:checked>visible</Checkbox>
       <Checkbox name="c2" bind:checked={disabled}>disabled</Checkbox>
       <Checkbox name="c3" error bind:checked={error}>error</Checkbox>
       <Radio name="r" bind:group value="1">option 1</Radio>
@@ -110,7 +120,6 @@
         error={err}
         bind:value
         postfix="$" />
-      <Input name="i2" fluid {disabled} error={err} bind:value postfix="$" />
     </div>
     <AnimatedButton
       {disabled}
@@ -123,7 +132,7 @@
       Click me !
     </AnimatedButton>
   </form>
-  <div class="wrap">
+  <div class="wrap pad">
     <Accordion bind:ctx>
       <span slot="header">Named slot !</span>
       <p>test</p>
@@ -133,5 +142,10 @@
       <p>test</p>
       <p>test</p>
     </Accordion>
+    <div class="alerts">
+      <Alert fluid type="info">Info message !</Alert>
+      <Alert fluid type="warn">Warning message !</Alert>
+      <Alert fluid type="error">Error message !</Alert>
+    </div>
   </div>
 </main>
