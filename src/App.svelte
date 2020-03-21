@@ -80,6 +80,7 @@
     background-color: #e2e2e2;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
   }
   .wrap.pad {
     padding: 8px;
@@ -144,6 +145,7 @@
     </Accordion>
     <div class="alerts">
       <Alert fluid type="info">Info message !</Alert>
+      <Alert fluid type="success">Success message !</Alert>
       <Alert fluid type="warn">Warning message !</Alert>
       <Alert fluid type="error">Error message !</Alert>
     </div>

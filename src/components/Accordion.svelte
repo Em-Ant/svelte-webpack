@@ -102,6 +102,7 @@
     overflow: hidden;
     background-color: #fff;
     border: 1px solid #666;
+    flex-shrink: 0;
   }
   span.signal {
     display: block;
