@@ -64,7 +64,7 @@
     left: 0;
   }
   @supports not (-ms-high-contrast: none) {
-    span.icon > svg > path {
+    span.icon-bg > svg > path {
       stroke-dasharray: 20;
       stroke-dashoffset: 20;
       animation: dash 0.1s linear forwards;
