@@ -81,6 +81,12 @@
   input:disabled {
     color: #999;
   }
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+  }
   span.error-icon {
     display: inline-flex;
     align-items: center;
