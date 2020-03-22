@@ -6,8 +6,10 @@
   import Accordion from "./components/Accordion.svelte";
   import Select from "./components/Select.svelte";
   import Alert from "./components/Alert.svelte";
+  import Toggle from "./components/Toggle.svelte";
   let checked = false;
   let disabled = false;
+  let on;
   let loading;
   let success;
   let error;
@@ -113,6 +115,8 @@
       <Radio name="r" bind:group value="1">option 1</Radio>
       <Radio {disabled} name="r" bind:group value="2">option 2</Radio>
       <Radio name="r" bind:group {error} value="3">option 3</Radio>
+      <Toggle name="t1" bind:on>toggle 1</Toggle>
+      <Toggle name="t2" on={!on} {disabled} {error}>toggle 2</Toggle>
       <Select {options} name="s" {disabled} error={err} />
       <Input
         name="i1"
