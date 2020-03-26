@@ -65,9 +65,9 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
-    filename: '[name]-[hash].bundle.js',
-    chunkFilename: '[name]-[hash].bundle.js'
+    publicPath: isDev(mode) ? '/' : './',
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js'
   },
   plugins: [
     new CleanWebpackPlugin(),
