@@ -73,7 +73,7 @@
     box-shadow: -2px 2px 3px -1px rgba(0, 0, 0, 0.2);
   }
   input[aria-invalid="true"] + span.hole {
-    background-color: #7c2926;
+    background-color: #c06361;
   }
   input[aria-invalid="true"]:checked + span.hole {
     background-color: #bb1b18;
