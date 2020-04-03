@@ -1,12 +1,13 @@
 <script>
   import Checkbox from "./components/Checkbox.svelte";
   import Radio from "./components/Radio.svelte";
-  import AnimatedButton from "./components/AnimatedButton.svelte";
+  import Button from "./components/Button.svelte";
   import Input from "./components/Input.svelte";
   import Accordion from "./components/Accordion.svelte";
   import Select from "./components/Select.svelte";
   import Alert from "./components/Alert.svelte";
   import Toggle from "./components/Toggle.svelte";
+  import Modal from "./components/Modal.svelte";
   let checked = false;
   let disabled = false;
   let on;
@@ -15,7 +16,6 @@
   let error;
   let group;
   let value = "";
-
   let input;
 
   let content;
@@ -23,14 +23,13 @@
 
   let options = ["option 1", "option 2", "option 3", "option 4"];
 
+  let footer = false;
+
   $: if (!checked) {
     setTimeout(function() {
       success = false;
+      footer = false;
     }, 500);
-  } else {
-    setTimeout(function() {
-      scrolling = content && content.scrollHeight > content.clientHeight;
-    }, 200);
   }
 
   $: err = error || value === "error" ? "error message test" : "";
@@ -40,8 +39,13 @@
     setTimeout(function() {
       loading = false;
       success = true;
+      open = true;
       input && input.focus();
     }, 1500);
+    setTimeout(function() {
+      footer = false;
+      checked = false;
+    }, 2000);
   }
   let ctx = [];
 </script>
@@ -54,6 +58,7 @@
     margin: 0 auto;
     color: #333;
     display: flex;
+    flex-wrap: wrap;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   }
@@ -78,11 +83,12 @@
   form.wrap {
     width: 300px;
     height: 400px;
-    margin: 0 16px 0 0;
+    margin: 0 16px 16px 0;
     background-color: #e2e2e2;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    flex-shrink: 0;
   }
   .wrap.pad {
     padding: 8px;
@@ -103,10 +109,33 @@
   div.alerts > :global(div.wrap:not(:last-of-type)) {
     margin-bottom: 8px;
   }
+  div.t {
+    background-color: #ddd;
+    height: 800px;
+  }
+  div.btn {
+    flex-grow: 1;
+    padding: 0 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 </style>
 
 <h1>Playground</h1>
 <main>
+  {#if checked}
+    <Modal {footer} mobile bind:open={checked}>
+      <h3 slot="header">Modal</h3>
+      <div class="t" on:click={() => (footer = !footer)} />
+      <div class="btn" slot="footer">
+        <Button fluid on:click={click} {loading} {success} {disabled}>
+          Click me !
+        </Button>
+      </div>
+
+    </Modal>
+  {/if}
   <form class="wrap" on:submit|preventDefault>
     <div bind:this={content} class="content">
       <Checkbox {disabled} name="c1" bind:checked>visible</Checkbox>
@@ -126,16 +155,6 @@
         bind:value
         postfix="$" />
     </div>
-    <AnimatedButton
-      {disabled}
-      {loading}
-      {success}
-      type="submit"
-      elevate={scrolling}
-      on:click={click}
-      show={checked}>
-      Click me !
-    </AnimatedButton>
   </form>
   <div class="wrap pad">
     <Accordion bind:ctx>
