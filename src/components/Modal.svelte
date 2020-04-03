@@ -169,12 +169,16 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    outline: none;
   }
   button.close:hover {
     background-color: rgba(0, 0, 0, 0.1);
   }
   button.close:active {
     background-color: rgba(26, 53, 128, 0.2);
+  }
+  button.close:focus {
+    box-shadow: 0 0 1px 2px rgba(28, 129, 141, 1);
   }
   @media screen and (max-width: 400px) {
     div.modal.mobile {
