@@ -14,13 +14,16 @@
     shadow_h = false,
     content;
 
+  $: if (footer) {
+    setTimeout(setShadows, 100);
+  }
   function setIsMobile() {
     const { width } = document.body.getBoundingClientRect();
     if (width <= 400) isMobile = true;
     else isMobile = false;
   }
 
-  function scrollHandler() {
+  function setShadows() {
     shadow_h = content.scrollTop !== 0;
     shadow_f =
       content.scrollHeight - content.scrollTop !== content.clientHeight &&
@@ -64,7 +67,7 @@
     document.body.style.overflow = "";
   }
   onMount(function() {
-    scrollHandler();
+    setShadows();
     lockFocus();
     lockScroll();
   });
@@ -235,7 +238,7 @@
         </button>
       </span>
     </div>
-    <div bind:this={content} on:scroll={scrollHandler} class="content">
+    <div bind:this={content} on:scroll={setShadows} class="content">
       <slot />
     </div>
     <div class="footer" class:in={footer} class:shadow={shadow_f && footer}>
