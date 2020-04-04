@@ -82,21 +82,17 @@
   div.wrap,
   form.wrap {
     width: 300px;
-    height: 400px;
+    height: 430px;
     margin: 0 16px 16px 0;
     background-color: #e2e2e2;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    align-items: flex-start;
     flex-shrink: 0;
   }
   .wrap.pad {
     padding: 8px;
-  }
-  div.content {
-    flex-grow: 1;
-    padding: 8px;
-    overflow-y: auto;
   }
   @media (min-width: 640px) {
     main {
@@ -105,6 +101,7 @@
   }
   div.alerts {
     margin: 8px 0;
+    width: 100%;
   }
   div.alerts > :global(div.wrap:not(:last-of-type)) {
     margin-bottom: 8px;
@@ -136,25 +133,24 @@
 
     </Modal>
   {/if}
-  <form class="wrap" on:submit|preventDefault>
-    <div bind:this={content} class="content">
-      <Checkbox {disabled} name="c1" bind:checked>visible</Checkbox>
-      <Checkbox name="c2" bind:checked={disabled}>disabled</Checkbox>
-      <Checkbox name="c3" error bind:checked={error}>error</Checkbox>
-      <Radio name="r" bind:group value="1">option 1</Radio>
-      <Radio {disabled} name="r" bind:group value="2">option 2</Radio>
-      <Radio name="r" bind:group {error} value="3">option 3</Radio>
-      <Toggle name="t1" bind:on>toggle 1</Toggle>
-      <Toggle name="t2" on={!on} {disabled} {error}>toggle 2</Toggle>
-      <Select {options} name="s" {disabled} error={err} />
-      <Input
-        name="i1"
-        bind:elem={input}
-        {disabled}
-        error={err}
-        bind:value
-        postfix="$" />
-    </div>
+  <form class="wrap pad">
+    <Checkbox {disabled} name="visible" bind:checked>open modal</Checkbox>
+    <Checkbox name="disabled" bind:checked={disabled}>disabled</Checkbox>
+    <Checkbox name="error" error bind:checked={error}>error</Checkbox>
+    <Radio name="radio" bind:group value="1">option 1</Radio>
+    <Radio {disabled} name="r" bind:group value="2">option 2</Radio>
+    <Radio name="radio" bind:group {error} value="3">option 3</Radio>
+    <Toggle name="toggle_1" bind:on>toggle 1</Toggle>
+    <Toggle name="toggle_2" on={!on} {disabled} {error}>toggle 2</Toggle>
+    <Select {options} name="select" {disabled} error={err} />
+    <Input
+      name="input"
+      bind:elem={input}
+      {disabled}
+      error={err}
+      bind:value
+      postfix="$" />
+    <Button {disabled} secondary={on} type="submit">Submit</Button>
   </form>
   <div class="wrap pad">
     <Accordion bind:ctx>

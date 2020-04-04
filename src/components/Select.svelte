@@ -92,10 +92,10 @@
   div.inner {
     display: flex;
     align-items: center;
-    max-width: 180px;
+    min-width: 180px;
   }
   div.inner.fluid {
-    max-width: 100%;
+    width: 100%;
   }
   button.select {
     display: flex;

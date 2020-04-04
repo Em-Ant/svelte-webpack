@@ -103,6 +103,7 @@
     background-color: #fff;
     border: 1px solid #666;
     flex-shrink: 0;
+    width: 100%;
   }
   span.signal {
     display: block;

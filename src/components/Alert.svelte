@@ -21,7 +21,7 @@
   div.wrap {
     display: flex;
     min-height: 60px;
-    max-width: 240px;
+    min-width: 240px;
     background-color: #ceeeec;
     border: 1px solid #1b8d9b;
     border-radius: 4px;
@@ -29,7 +29,7 @@
     padding: 8px;
   }
   div.wrap.fluid {
-    max-width: 100%;
+    width: 100%;
   }
   div.wrap.warn {
     background-color: #fcf0bd;

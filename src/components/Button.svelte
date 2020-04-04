@@ -4,6 +4,8 @@
   export let loading = undefined;
   export let success = undefined;
   export let fluid = false;
+  export let small = false;
+  export let secondary = false;
   export let type = "button";
   export let attrs = {};
   export let elem = undefined;
@@ -31,7 +33,7 @@
   }
   button {
     min-height: 48px;
-    min-width: 120px;
+    min-width: 140px;
     font-family: inherit;
     font-weight: 600;
     font-size: 14px;
@@ -47,7 +49,20 @@
     border-radius: 2px;
     padding: 8px;
     flex-shrink: 0;
+    flex-grow: 0;
     transition: background-color 0.2s ease-in-out;
+  }
+  button.secondary {
+    background-color: white;
+    color: #282828;
+    border: 1px solid #282828;
+  }
+  button.secondary:hover {
+    background-color: #eee;
+  }
+  button.small {
+    min-height: 36px;
+    min-width: 100px;
   }
   button.fluid {
     flex-grow: 1;
@@ -61,7 +76,12 @@
   }
   button:disabled {
     background-color: darkgrey;
-    cursor: auto;
+    cursor: initial;
+  }
+  button.secondary:disabled {
+    background-color: #ddd;
+    border-color: #666;
+    color: #666;
   }
   button:focus {
     box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
@@ -79,7 +99,16 @@
   }
 </style>
 
-<button class:fluid bind:this={elem} on:click {disabled} {id} {type} {...attrs}>
+<button
+  class:fluid
+  class:small
+  class:secondary
+  bind:this={elem}
+  on:click
+  {disabled}
+  {id}
+  {type}
+  {...attrs}>
   {#if loading}
     <svg
       class="loader"

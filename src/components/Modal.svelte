@@ -196,8 +196,8 @@
 <div data-lock>
   <div
     class="backdrop"
-    in:fade={{ duration: 300 }}
-    out:fade={{ delay: 100, duration: 100 }} />
+    in:fade={{ duration: 200 }}
+    out:fade={{ duration: 200 }} />
   <div
     class="modal"
     class:mobile
