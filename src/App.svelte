@@ -85,8 +85,6 @@
     height: 430px;
     margin: 0 16px 16px 0;
     background-color: #e2e2e2;
-    display: flex;
-    flex-direction: column;
     overflow-y: auto;
     align-items: flex-start;
     flex-shrink: 0;

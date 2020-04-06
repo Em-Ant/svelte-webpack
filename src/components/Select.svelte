@@ -86,13 +86,13 @@
 <style>
   div.wrap {
     position: relative;
-    min-height: 54px;
+    min-height: 56px;
     font-family: "Open Sans", sans-serif;
   }
   div.inner {
     display: flex;
     align-items: center;
-    min-width: 180px;
+    width: 180px;
   }
   div.inner.fluid {
     width: 100%;
@@ -100,7 +100,7 @@
   button.select {
     display: flex;
     align-items: center;
-    height: 30px;
+    height: 32px;
     box-sizing: border-box;
     flex-grow: 1;
     margin: 0;

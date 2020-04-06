@@ -32,8 +32,8 @@
     }
   }
   button {
-    min-height: 48px;
-    min-width: 140px;
+    min-height: 40px;
+    min-width: 120px;
     font-family: inherit;
     font-weight: 600;
     font-size: 14px;
@@ -61,7 +61,7 @@
     background-color: #eee;
   }
   button.small {
-    min-height: 36px;
+    min-height: 32px;
     min-width: 100px;
   }
   button.fluid {

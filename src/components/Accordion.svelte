@@ -42,7 +42,7 @@
   button {
     outline: none;
     background-color: #fff;
-    min-height: 40px;
+    min-height: 48px;
     display: block;
     border: 1px solid #666;
     width: 100%;
