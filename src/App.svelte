@@ -120,7 +120,7 @@
 <h1>Playground</h1>
 <main>
   {#if checked}
-    <Modal {footer} mobile bind:open={checked}>
+    <Modal {footer} onClose autofocus mobile bind:open={checked}>
       <h3 slot="header">Modal</h3>
       <div class="t" on:click={() => (footer = !footer)} />
       <div class="btn" slot="footer">

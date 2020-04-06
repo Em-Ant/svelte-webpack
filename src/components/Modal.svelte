@@ -2,9 +2,15 @@
   import { onMount, onDestroy } from "svelte";
   import { fade, fly } from "svelte/transition";
 
+  import cross from "../assets/cross.svg";
+
   export let footer = false;
   export let mobile = false;
   export let open = false;
+  export let onClose;
+  export let autofocus = false;
+
+  let close;
 
   let isMobile;
   setIsMobile();
@@ -66,10 +72,16 @@
   function unlockScroll() {
     document.body.style.overflow = "";
   }
+  function focusCloseBtn() {
+    if (autofocus && onClose) {
+      close.focus();
+    }
+  }
   onMount(function() {
     setShadows();
     lockFocus();
     lockScroll();
+    focusCloseBtn();
   });
   onDestroy(function() {
     unlockFocus();
@@ -210,33 +222,21 @@
       <div class="header-content">
         <slot name="header" />
       </div>
-      <span class="close">
-        <button class="close" on:click={() => (open = false)}>
-          <svg
-            width="16px"
-            height="16px"
-            viewBox="0 0 16 16"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink">
-            <g
-              id="Interface-Essential-/-Remove/Add-/-remove"
-              stroke="none"
-              stroke-width="1"
-              fill="none"
-              fill-rule="evenodd"
-              stroke-linecap="round"
-              stroke-linejoin="round">
-              <g id="Group" stroke="#404040" stroke-width="1.5">
-                <g id="remove">
-                  <path d="M0.5,15.5 L15.5,0.5" id="Shape" />
-                  <path d="M0.5,0.5 L15.5,15.5" id="Shape" />
-                </g>
-              </g>
-            </g>
-          </svg>
-        </button>
-      </span>
+      {#if onClose}
+        <span class="close">
+          <button
+            bind:this={close}
+            class="close"
+            on:click={() => {
+              open = false;
+              if (onClose && typeof onClose === 'function') {
+                onClose();
+              }
+            }}>
+            {@html cross}
+          </button>
+        </span>
+      {/if}
     </div>
     <div bind:this={content} on:scroll={setShadows} class="content">
       <slot />
