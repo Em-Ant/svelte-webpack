@@ -8,6 +8,7 @@
   import Alert from "./components/Alert.svelte";
   import Toggle from "./components/Toggle.svelte";
   import Modal from "./components/Modal.svelte";
+  import Label from "./components/Label.svelte";
   let checked = false;
   let disabled = false;
   let on;
@@ -82,7 +83,7 @@
   div.wrap,
   form.wrap {
     width: 300px;
-    height: 430px;
+    height: 450px;
     margin: 0 16px 16px 0;
     background-color: #e2e2e2;
     overflow-y: auto;
@@ -140,6 +141,12 @@
     <Radio name="radio" bind:group {error} value="3">option 3</Radio>
     <Toggle name="toggle_1" bind:on>toggle 1</Toggle>
     <Toggle name="toggle_2" on={!on} {disabled} {error}>toggle 2</Toggle>
+    <Label text="label">
+      <span slot="info">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </span>
+    </Label>
     <Select {options} name="select" {disabled} error={err} />
     <Input
       name="input"
