@@ -141,7 +141,8 @@
     <Radio name="radio" bind:group {error} value="3">option 3</Radio>
     <Toggle name="toggle_1" bind:on>toggle 1</Toggle>
     <Toggle name="toggle_2" on={!on} {disabled} {error}>toggle 2</Toggle>
-    <Label text="label">
+    <Label info>
+      <span>label</span>
       <span slot="info">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.

@@ -2,8 +2,7 @@
   import Tooltip from "./Tooltip.svelte";
   import infoIcon from "../assets/info_light.svg";
 
-  export let text = "";
-  export let info = true;
+  export let info = false;
   export let infoOpen = false;
   export let attrs = {};
   export let infoAttrs = {};
@@ -51,7 +50,7 @@
 </style>
 
 <label {...attrs}>
-  <span>{text}</span>
+  <slot />
   {#if info}
     <button
       on:click={onClick}

@@ -1,5 +1,5 @@
 <script>
-  import { onMount, onDestroy } from "svelte";
+  import { onDestroy } from "svelte";
   import { fade } from "svelte/transition";
   import { createPopper } from "@popperjs/core";
 
@@ -16,7 +16,7 @@
       {
         name: "offset",
         options: {
-          offset: [4, 10]
+          offset: [0, 10]
         }
       },
       {
@@ -28,7 +28,7 @@
       {
         name: "arrow",
         options: {
-          padding: 4
+          padding: 2
         }
       },
       {
@@ -36,10 +36,10 @@
         options: {
           padding: 4,
           fallbackPlacements: [
-            "right-end",
-            "right-start",
+            "bottom-start",
             "bottom",
             "bottom-end",
+            "top-start",
             "top",
             "top-end",
             "left-start",
@@ -52,7 +52,7 @@
     ]
   };
 
-  $: if (ref && options) {
+  $: if (ref && options && tooltip && attrs) {
     destroy();
     create();
   }
@@ -60,6 +60,7 @@
   function create() {
     if (ref && tooltip && !popper) {
       popper = createPopper(ref, tooltip, { ...defaults, options });
+      popper.update();
     }
   }
   function destroy() {
@@ -68,9 +69,6 @@
       popper = null;
     }
   }
-  onMount(function() {
-    create();
-  });
   onDestroy(function() {
     destroy();
   });
@@ -96,14 +94,14 @@
   div.arrow,
   div.arrow::before {
     position: absolute;
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
     z-index: -1;
   }
 
   div.arrow::before {
-    content: "";
-    transform: rotate(45deg);
+    content: " ";
+    transform: rotate(45deg) scale(0.7);
     background: #282828;
   }
   :global(div.tooltip[data-popper-reference-hidden]) {
@@ -111,19 +109,19 @@
     pointer-events: none;
   }
   :global(div.tooltip[data-popper-placement^="top"] > div.arrow) {
-    bottom: -4px;
+    bottom: -6px;
   }
 
   :global(div.tooltip[data-popper-placement^="bottom"] > div.arrow) {
-    top: -4px;
+    top: -6px;
   }
 
   :global(div.tooltip[data-popper-placement^="left"] > div.arrow) {
-    right: -4px;
+    right: -6px;
   }
 
   :global(div.tooltip[data-popper-placement^="right"] > div.arrow) {
-    left: -4px;
+    left: -6px;
   }
 </style>
 
