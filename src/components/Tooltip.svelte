@@ -6,6 +6,7 @@
   export let attrs = {};
   export let options = {};
   export let ref = null;
+  export let boundaryElem;
 
   let tooltip;
   let popper;
@@ -22,7 +23,8 @@
       {
         name: "preventOverflow",
         options: {
-          altAxis: true // false by default
+          altAxis: true,
+          boundary: boundaryElem || "clippingParents"
         }
       },
       {

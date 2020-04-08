@@ -21,16 +21,22 @@
 </script>
 
 <style>
-  label {
+  div.wrap {
     position: relative;
     display: inline-flex;
     align-items: center;
     margin-bottom: 4px;
+  }
+  label {
+    max-width: 180px;
+    display: inline-block;
     font-family: "Open Sans";
     font-weight: 600;
     font-size: 14px;
+    flex-shrink: 0;
+    flex-grow: 0;
   }
-  label > button {
+  label + button {
     height: 16px;
     width: 16px;
     display: inline-flex;
@@ -44,13 +50,15 @@
     cursor: pointer;
     outline: none;
   }
-  label > button:focus {
+  label + button:focus {
     box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
   }
 </style>
 
-<label {...attrs}>
-  <slot />
+<div class="wrap">
+  <label {...attrs}>
+    <slot />
+  </label>
   {#if info}
     <button
       on:click={onClick}
@@ -67,4 +75,4 @@
       <slot name="info" />
     </Tooltip>
   {/if}
-</label>
+</div>
