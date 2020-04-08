@@ -43,6 +43,10 @@
     padding: 0;
     margin-left: 4px;
     cursor: pointer;
+    outline: none;
+  }
+  label > button:focus {
+    box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
   }
 </style>
 
