@@ -11,8 +11,13 @@
   export let autofocus = false;
 
   let close;
-
   let isMobile;
+
+  function setIsMobile() {
+    const { width } = document.body.getBoundingClientRect();
+    if (width <= 400) isMobile = true;
+    else isMobile = false;
+  }
   setIsMobile();
 
   $: fly_y = mobile && isMobile ? 200 : -80;
@@ -20,20 +25,14 @@
     shadow_h = false,
     content;
 
-  $: if (footer) {
-    setTimeout(setShadows, 100);
-  }
-  function setIsMobile() {
-    const { width } = document.body.getBoundingClientRect();
-    if (width <= 400) isMobile = true;
-    else isMobile = false;
-  }
-
   function setShadows() {
     shadow_h = content.scrollTop !== 0;
     shadow_f =
       content.scrollHeight - content.scrollTop !== content.clientHeight &&
       content.scrollHeight !== content.clientHeight;
+  }
+  $: if (footer) {
+    setTimeout(setShadows, 100);
   }
 
   let nonModalNodes;
@@ -72,11 +71,13 @@
   function unlockScroll() {
     document.body.style.overflow = "";
   }
+
   function focusCloseBtn() {
     if (autofocus && onClose) {
       close.focus();
     }
   }
+
   onMount(function() {
     setShadows();
     lockFocus();
