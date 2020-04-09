@@ -8,6 +8,13 @@
   export let ref = null;
   export let boundaryElem;
 
+  /**
+   * custom tooltip element
+   * must bind this to a ref prop,
+   * and accept a slot as children
+   */
+  export let elem = null;
+
   let tooltip;
   let popper;
 
@@ -128,12 +135,18 @@
 </style>
 
 {#if ref}
-  <div
-    {attrs}
-    transition:fade={{ duration: 150 }}
-    class="tooltip"
-    bind:this={tooltip}>
-    <div data-popper-arrow class="arrow" />
-    <slot />
-  </div>
+  {#if elem}
+    <svelte:component this={elem} bind:ref={tooltip}>
+      <slot />
+    </svelte:component>
+  {:else}
+    <div
+      {attrs}
+      transition:fade={{ duration: 150 }}
+      class="tooltip"
+      bind:this={tooltip}>
+      <div data-popper-arrow class="arrow" />
+      <slot />
+    </div>
+  {/if}
 {/if}
