@@ -1,6 +1,7 @@
 <script>
   import { onMount, onDestroy } from "svelte";
   import { fade, fly } from "svelte/transition";
+  import { circInOut } from "svelte/easing";
 
   import cross from "../assets/cross.svg";
 
@@ -12,6 +13,8 @@
 
   let close;
   let isMobile;
+  let modal;
+  let modalHeight = 200;
 
   function setIsMobile() {
     const { width } = document.body.getBoundingClientRect();
@@ -20,7 +23,7 @@
   }
   setIsMobile();
 
-  $: fly_y = mobile && isMobile ? 200 : -80;
+  $: fly_y = mobile && isMobile ? modalHeight : -80;
   let shadow_f = false,
     shadow_h = false,
     content;
@@ -84,6 +87,8 @@
   }
 
   onMount(function() {
+    const { height } = modal.getBoundingClientRect();
+    modalHeight = height;
     setShadows();
     lockFocus();
     lockScroll();
@@ -224,11 +229,12 @@
 <div data-lock>
   <div
     class="backdrop"
-    in:fade={{ duration: 200 }}
-    out:fade={{ duration: 200 }} />
+    in:fade={{ duration: 200, easing: circInOut }}
+    out:fade={{ delay: 100, duration: 200, easing: circInOut }} />
   <div
     class="modal"
     class:mobile
+    bind:this={modal}
     in:fly={{ delay: 200, y: fly_y, duration: 200 }}
     out:fly={{ y: fly_y, duration: 200 }}>
     <div class="header" class:shadow={shadow_h}>
