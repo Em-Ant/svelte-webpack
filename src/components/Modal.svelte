@@ -53,7 +53,6 @@
     }
   }
   function unlockFocus() {
-    document.body.style.overflow = null;
     for (var i = 0; i < nonModalNodes.length; i++) {
       var node = nonModalNodes[i];
       if (node._prevTabindex) {
@@ -66,10 +65,16 @@
     }
   }
   function lockScroll() {
+    document.documentElement.style.overflow = "hidden";
+    document.documentElement.style.height = "100vh";
     document.body.style.overflow = "hidden";
+    document.body.style.height = "100vh";
   }
   function unlockScroll() {
+    document.documentElement.style.overflow = "";
+    document.documentElement.style.height = "auto";
     document.body.style.overflow = "";
+    document.body.style.height = "auto";
   }
 
   function focusCloseBtn() {
@@ -98,6 +103,9 @@
     left: 0;
     right: 0;
     z-index: 100;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
   }
   div.backdrop {
     position: absolute;
@@ -105,6 +113,9 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: -1;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
   }
   div.modal {
     min-width: 280px;
@@ -143,6 +154,7 @@
     flex-shrink: 1;
     overflow-y: auto;
     padding: 0 16px;
+    overscroll-behavior: none;
   }
   div.footer {
     height: 0;
