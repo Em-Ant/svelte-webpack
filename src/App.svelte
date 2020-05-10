@@ -116,6 +116,10 @@
     justify-content: center;
     align-items: center;
   }
+  div.paper {
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 3px -1px rgba(0, 0, 0, 0.2);
+  }
 </style>
 
 <h1>Playground</h1>
@@ -159,15 +163,17 @@
     <Button {disabled} secondary={on} type="submit">Submit</Button>
   </form>
   <div class="wrap pad">
-    <Accordion bind:ctx>
-      <span slot="header">Named slot !</span>
-      <p>test</p>
-      <p>test</p>
-    </Accordion>
-    <Accordion bind:ctx>
-      <p>test</p>
-      <p>test</p>
-    </Accordion>
+    <div class="paper">
+      <Accordion bind:ctx>
+        <span slot="header">Named slot !</span>
+        <p>test</p>
+        <p>test</p>
+      </Accordion>
+      <Accordion bind:ctx>
+        <p>test</p>
+        <p>test</p>
+      </Accordion>
+    </div>
     <div class="alerts">
       <Alert fluid type="info">Info message !</Alert>
       <Alert fluid type="success">Success message !</Alert>

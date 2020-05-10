@@ -44,9 +44,9 @@
     background-color: #fff;
     min-height: 48px;
     display: block;
-    border: 1px solid #666;
+    border: none;
+    border-bottom: 1px solid #ccc;
     width: 100%;
-    border-bottom: none;
     cursor: pointer;
     position: relative;
     font-family: "Open Sans", sans-serif;
@@ -64,13 +64,17 @@
     top: 0;
     padding: 0 8px;
     align-items: center;
-    transition: transform 0.2s ease-in;
+    transition: all 0.2s ease-in;
   }
   button > span.arrow > svg {
     transition: transform 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95);
   }
   button > span.arrow > svg > g > path {
     transition: fill 0.2s ease-in-out;
+  }
+  button.open {
+    border: none;
+    box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.3);
   }
   button.open > span.arrow > svg {
     transform: rotate(-180deg);
@@ -89,11 +93,8 @@
     background: transparent;
     transition: box-shadow 0.2s ease-in-out;
   }
-  button:focus:after {
-    box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
-  }
   button:last-of-type:not(.open) {
-    border-bottom: 1px solid #666;
+    border-bottom: none;
   }
   div.content + button {
     border-top: none;
@@ -101,7 +102,7 @@
   div.content {
     overflow: hidden;
     background-color: #fff;
-    border: 1px solid #666;
+    border-bottom: 1px solid #ccc;
     flex-shrink: 0;
     width: 100%;
   }
@@ -118,6 +119,23 @@
   button:hover > span.signal,
   button.open > span.signal {
     width: 2px;
+  }
+  button:first-child {
+    border-radius: 4px 4px 0 0;
+  }
+  button:first-child:hover > span.signal,
+  button:first-child.open > span.signal {
+    border-radius: 4px 0 0 0;
+  }
+  button:last-child {
+    border-radius: 0 0 4px 4px;
+  }
+  button:last-child:hover > span.signal {
+    border-radius: 0 0 0 4px;
+  }
+  button:focus:after {
+    outline: 2px solid #639297;
+    outline-offset: 1px;
   }
 </style>
 
