@@ -46,7 +46,7 @@
     cursor: pointer;
     outline: none;
     border: none;
-    border-radius: 2px;
+    border-radius: 4px;
     padding: 8px;
     flex-shrink: 0;
     flex-grow: 0;
