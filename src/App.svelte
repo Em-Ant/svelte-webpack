@@ -141,7 +141,7 @@
     <Checkbox name="disabled" bind:checked={disabled}>disabled</Checkbox>
     <Checkbox name="error" error bind:checked={error}>error</Checkbox>
     <Radio name="radio" bind:group value="1">option 1</Radio>
-    <Radio {disabled} name="r" bind:group value="2">option 2</Radio>
+    <Radio {disabled} name="radio" bind:group value="2">option 2</Radio>
     <Radio name="radio" bind:group {error} value="3">option 3</Radio>
     <Toggle name="toggle_1" bind:on>toggle 1</Toggle>
     <Toggle name="toggle_2" on={!on} {disabled} {error}>toggle 2</Toggle>
