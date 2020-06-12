@@ -106,7 +106,7 @@
     margin-bottom: 8px;
   }
   div.t {
-    background-color: #ddd;
+    background-color: #f2f2f2;
     height: 800px;
   }
   div.btn {

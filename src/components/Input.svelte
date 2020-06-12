@@ -51,7 +51,7 @@
   }
   div.field.disabled {
     border: solid 2px #999;
-    background-color: #ddd;
+    background-color: #f2f2f2;
     color: #999;
   }
   div.field:focus-within {

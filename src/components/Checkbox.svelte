@@ -99,13 +99,13 @@
   }
   input:disabled + span.icon > span.icon-bg {
     border: 2px solid #999;
-    background-color: #ddd;
+    background-color: #f2f2f2;
   }
   input:disabled:checked + span.icon > span.icon-bg {
     background-color: #999;
   }
   input:disabled:checked + span.icon > span.icon-bg > svg > path {
-    stroke: #ddd;
+    stroke: #f2f2f2;
   }
   input:focus + span.icon > span.icon-bg {
     box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);

@@ -79,7 +79,7 @@
     cursor: initial;
   }
   button.secondary:disabled {
-    background-color: #ddd;
+    background-color: #f2f2f2;
     border-color: #666;
     color: #666;
   }

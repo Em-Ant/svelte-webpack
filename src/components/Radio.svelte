@@ -85,7 +85,7 @@
   }
   input:disabled + span.icon {
     border: 2px solid #999;
-    background-color: #ddd;
+    background-color: #f2f2f2;
   }
   input:disabled:checked + span.icon {
     background-color: #999;

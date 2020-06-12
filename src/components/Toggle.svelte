@@ -88,7 +88,7 @@
     background-color: #967a7a;
   }
   input:disabled + span.hole > span.toggle {
-    background-color: #ddd;
+    background-color: #f2f2f2;
   }
   input:focus + span.hole {
     box-shadow: inset 3px 3px 4px -1px rgba(0, 0, 0, 0.4), 0 0 2px 1px #f2f2f2,
