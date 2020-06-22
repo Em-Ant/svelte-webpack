@@ -9,6 +9,7 @@
   import Toggle from "./components/Toggle.svelte";
   import Modal from "./components/Modal.svelte";
   import Label from "./components/Label.svelte";
+  import Tabs from "./components/Tabs.svelte";
   let checked = false;
   let disabled = false;
   let on;
@@ -180,5 +181,8 @@
       <Alert fluid type="warn">Warning message !</Alert>
       <Alert fluid type="error">Error message !</Alert>
     </div>
+  </div>
+  <div class="wrap pad">
+    <Tabs />
   </div>
 </main>
