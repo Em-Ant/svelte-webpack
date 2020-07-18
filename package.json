@@ -22,8 +22,8 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@popperjs/core": "^2.4.2",
-    "@sveltejs/pancake": "0.0.13",
-    "svelte": "^3.23.2"
+    "@popperjs/core": "^2.4.4",
+    "@sveltejs/pancake": "0.0.14",
+    "svelte": "^3.24.0"
   }
 }
