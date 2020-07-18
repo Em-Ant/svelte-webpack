@@ -2,11 +2,23 @@
   import Indicator from "./Indicator.svelte";
   import { onMount } from "svelte";
   import { spring } from "svelte/motion";
+  import { circInOut } from "svelte/easing";
 
   let ind;
   let base;
   let wrap;
+  let _active = 1;
+  let _prev = _active;
+
+  let _cw;
+  let _c;
+
+  $: if (_c && _cw)
+    _cw.style.minHeight = `${_c.getBoundingClientRect().height}px`;
+
   const handleSet = i => () => {
+    _prev = _active;
+    _active = i;
     const base = wrap.getBoundingClientRect().x;
     const active = document.getElementById(`t${i}`);
     const r = active.getBoundingClientRect();
@@ -25,11 +37,25 @@
         w: r.width
       },
       {
-        stiffness: 0.07,
-        damping: 0.35
+        stiffness: 0.1,
+        damping: 0.5
       }
     );
   });
+
+  function fade(node, { delay = 0, duration = 200, left = true }) {
+    const w = node.getBoundingClientRect().width;
+    const m = left ? -2 : 1;
+    return {
+      delay,
+      duration,
+      left,
+      css: t => {
+        const _t = circInOut(t);
+        return `transform: translateX(${m * w * (1 - _t)}px); opacity: ${t}`;
+      }
+    };
+  }
 </script>
 
 <style>
@@ -66,6 +92,17 @@
     width: max-content;
     min-width: 100%;
   }
+  div.content-wrap {
+    margin-top: 16px;
+    position: relative;
+    overflow-x: hidden;
+  }
+  div.content {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 </style>
 
 <div class="out">
@@ -77,4 +114,33 @@
     </div>
     <Indicator left={ind && $ind.x} width={ind && $ind.w} />
   </div>
+</div>
+<div class="content-wrap" bind:this={_cw}>
+  {#if _active === 1}
+    <div
+      class="content"
+      bind:this={_c}
+      in:fade={{ left: _active < _prev }}
+      out:fade={{ left: _active >= _prev }}>
+      test 1
+    </div>
+  {/if}
+  {#if _active === 2}
+    <div
+      bind:this={_c}
+      class="content"
+      in:fade={{ left: _active < _prev }}
+      out:fade={{ left: _active >= _prev }}>
+      test 2
+    </div>
+  {/if}
+  {#if _active === 3}
+    <div
+      class="content"
+      bind:this={_c}
+      in:fade={{ left: _active < _prev }}
+      out:fade={{ left: _active >= _prev }}>
+      test 3
+    </div>
+  {/if}
 </div>
