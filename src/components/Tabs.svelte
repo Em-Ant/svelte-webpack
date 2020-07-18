@@ -43,7 +43,7 @@
     );
   });
 
-  function fade(node, { delay = 0, duration = 200, left = true }) {
+  function fade(node, { delay = 0, duration = 300, left = true }) {
     const w = node.getBoundingClientRect().width;
     const m = left ? -2 : 1;
     return {
