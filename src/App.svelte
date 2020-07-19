@@ -183,6 +183,7 @@
     </div>
   </div>
   <div class="wrap pad">
-    <Tabs />
+    <Tabs
+      elements={[{ header: 'Tab 1', component: 'Test 1' }, { header: 'Tab 2', component: 'Test 2' }, { header: 'Tab 3', component: 'Test 3' }]} />
   </div>
 </main>
