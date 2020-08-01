@@ -18,6 +18,7 @@
     };
   }
   let active;
+  let optionsElems = [];
   function next() {
     if (!options.length) return;
     if (active === undefined) {
@@ -25,9 +26,13 @@
       return;
     }
     const i = options.indexOf(active);
-    i === options.length - 1
-      ? (active = options[0])
-      : (active = options[i + 1]);
+    if (i === options.length - 1) {
+      active = options[0];
+      optionsElems[0].scrollIntoView();
+    } else {
+      active = options[i + 1];
+      optionsElems[i + 1].scrollIntoView();
+    }
   }
   function prev(index) {
     if (!options.length) return null;
@@ -36,9 +41,13 @@
       return;
     }
     const i = options.indexOf(active);
-    i === 0
-      ? (active = options[options.length - 1])
-      : (active = options[i - 1]);
+    if (i === 0) {
+      active = options[options.length - 1];
+      optionsElems[options.length - 1].scrollIntoView();
+    } else {
+      active = options[i - 1];
+      optionsElems[i - 1].scrollIntoView();
+    }
   }
   function toggle() {
     if (open) {
@@ -285,8 +294,9 @@
   </div>
   {#if open}
     <div class:fluid in:enter out:enter={{ delay: 150 }} class="options">
-      {#each options as opt (opt && (opt.key || opt.value || opt))}
+      {#each options as opt, i (opt && (opt.key || opt.value || opt))}
         <p
+          bind:this={optionsElems[i]}
           class:selected={opt === value}
           class:active={opt === active}
           on:mouseenter|preventDefault={() => (active = opt)}
