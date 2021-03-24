@@ -10,6 +10,7 @@
   import Modal from "./components/Modal.svelte";
   import Label from "./components/Label.svelte";
   import Tabs from "./components/Tabs.svelte";
+  import Slider from "./components/Slider.svelte";
   let checked = false;
   let disabled = false;
   let on;
@@ -19,6 +20,8 @@
   let group;
   let value = "";
   let input;
+
+  let sliderVal;
 
   let content;
   let scrolling;
@@ -185,5 +188,9 @@
   <div class="wrap pad">
     <Tabs
       elements={[{ header: 'Tab 1', component: 'Test 1' }, { header: 'Tab 2', component: 'Test 2' }, { header: 'Tab 3', component: 'Test 3' }]} />
+    <div style="height: 60px;"></div>
+    <Slider step={10} showPopover bind:value={sliderVal}>
+      <span slot="popover">{`${sliderVal} %`}</span>
+    </Slider>
   </div>
 </main>

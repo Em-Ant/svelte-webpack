@@ -56,7 +56,7 @@
 </style>
 
 <div class="wrap">
-  <label {...attrs}>
+  <label for={attrs.for} {...attrs}>
     <slot />
   </label>
   {#if info}

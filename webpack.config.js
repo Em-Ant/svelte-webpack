@@ -18,7 +18,7 @@ const getBuildTag = () => {
     return `${version}:${time}`;
   }
 };
-const isDev = mode => mode === 'development';
+const isDev = (mode) => mode === 'development';
 const mode = process.env.NODE_ENV || 'development';
 
 module.exports = {
@@ -29,45 +29,55 @@ module.exports = {
       {
         test: /\.svelte$/,
         use: {
-          loader: 'svelte-loader',
+          loader: 'svelte-loader-hot',
           options: {
-            emitCss: true,
-            hotReload: true
-          }
-        }
+            dev: isDev,
+            hotReload: true,
+            hotOptions: {
+              // whether to preserve local state (i.e. any `let` variable) or
+              // only public props (i.e. `export let ...`)
+              noPreserveState: false,
+              // optimistic will try to recover from runtime errors happening
+              // during component init. This goes funky when your components are
+              // not pure enough.
+              optimistic: true,
+
+              // See docs of svelte-loader-hot for all available options:
+              //
+              // https://github.com/rixo/svelte-loader-hot#usage
+            },
+          },
+        },
       },
       {
         test: /\.svg$/,
         use: {
           loader: 'svg-inline-loader',
           options: {
-            removeSVGTagAttrs: false
-          }
-        }
+            removeSVGTagAttrs: false,
+          },
+        },
       },
       {
         test: /\.css$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: isDev(mode)
-            }
           },
-          'css-loader'
-        ]
-      }
-    ]
+          'css-loader',
+        ],
+      },
+    ],
   },
   resolve: {
     extensions: ['.mjs', '.js', '.svelte'],
-    modules: ['.', 'node_modules']
+    modules: ['.', 'node_modules'],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: isDev(mode) ? '/' : './',
     filename: '[name].bundle.js',
-    chunkFilename: '[name].bundle.js'
+    chunkFilename: '[name].bundle.js',
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -76,14 +86,17 @@ module.exports = {
       inject: 'body',
       hash: true,
       templateParameters: {
-        build: getBuildTag()
-      }
+        build: getBuildTag(),
+      },
     }),
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[id].css',
-      ignoreOrder: false // Enable to remove warnings about conflicting order
-    })
+      ignoreOrder: false, // Enable to remove warnings about conflicting order
+    }),
   ],
-  devtool: isDev(mode) ? 'eval.source-map' : false
+  devtool: isDev(mode) ? 'eval-source-map' : false,
+  devServer: {
+    hot: true,
+  },
 };

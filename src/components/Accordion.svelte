@@ -96,9 +96,6 @@
   button:last-of-type:not(.open) {
     border-bottom: none;
   }
-  div.content + button {
-    border-top: none;
-  }
   div.content {
     overflow: hidden;
     background-color: #fff;
