@@ -1,14 +1,12 @@
 <script>
-  import { onMount } from "svelte";
-  export let open = false;
-  export let ctx = undefined;
-  let _this;
-  $: {
-    if (ctx) {
-      const el = ctx.find(n => n && n.node === _this);
-      if (el) open = el.open;
-    }
-  }
+  import { getContext } from 'svelte';
+	import { ACCORDION } from './Accordion.svelte';
+
+  const row = {};
+	const { registerRow, toggle, active } = getContext(ACCORDION);
+  registerRow(row);
+
+
   function scroll(node, { delay = 0, duration = 200 }) {
     const height = node.scrollHeight;
     return {
@@ -17,25 +15,12 @@
       css: t => `height: ${t * height}px;`
     };
   }
-  onMount(() => {
-    if (ctx && Array.isArray(ctx)) {
-      ctx.push({ node: _this, open });
-    }
-    return () => {
-      if (ctx && Array.isArray(ctx)) {
-        const i = ctx.findIndex(n => n.node === this);
-        if (i > -1) ctx.splice(i, 1);
-      }
-    };
-  });
+
   const handleClick = () => {
-    open = !open;
-    if (ctx && Array.isArray(ctx)) {
-      ctx = ctx.map((n = {}) =>
-        n.node === _this ? { ...n, open } : { ...n, open: false }
-      );
-    }
+    toggle(row);
   };
+  
+  $: open = $active === row;
 </script>
 
 <style>
@@ -137,13 +122,12 @@
 </style>
 
 <button
-  bind:this={_this}
   class:open
   type="button"
   on:click
   on:click={handleClick}>
   <span class="signal" />
-  <slot name="header">Click me !</slot>
+  <slot name="header"></slot>
   <span class="arrow">
     <svg
       width="16"
@@ -173,6 +157,6 @@
 </button>
 {#if open}
   <div transition:scroll class="content">
-    <slot {ctx} />
+    <slot />
   </div>
 {/if}

@@ -3,7 +3,7 @@
   import Radio from "./components/Radio.svelte";
   import Button from "./components/Button.svelte";
   import Input from "./components/Input.svelte";
-  import Accordion from "./components/Accordion.svelte";
+  import { Accordion, Row } from "./components/Accordion";
   import Select from "./components/Select.svelte";
   import Alert from "./components/Alert.svelte";
   import Toggle from "./components/Toggle.svelte";
@@ -22,9 +22,6 @@
   let input;
 
   let sliderVal;
-
-  let content;
-  let scrolling;
 
   let options = ["option 1", "option 2", "option 3", "option 4"];
 
@@ -52,7 +49,6 @@
       checked = false;
     }, 2000);
   }
-  let ctx = [];
 </script>
 
 <style>
@@ -120,10 +116,6 @@
     justify-content: center;
     align-items: center;
   }
-  div.paper {
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 3px -1px rgba(0, 0, 0, 0.2);
-  }
 </style>
 
 <h1>Playground</h1>
@@ -167,17 +159,16 @@
     <Button {disabled} secondary={on} type="submit">Submit</Button>
   </form>
   <div class="wrap pad">
-    <div class="paper">
-      <Accordion bind:ctx>
-        <span slot="header">Named slot !</span>
+    <Accordion>
+      <Row>
+        <span slot="header">Click Me!</span>
         <p>test</p>
-        <p>test</p>
-      </Accordion>
-      <Accordion bind:ctx>
-        <p>test</p>
-        <p>test</p>
-      </Accordion>
-    </div>
+      </Row>
+      <Row>
+        <span slot="header">Named slot</span>
+        <p>test II</p>
+      </Row>
+    </Accordion>
     <div class="alerts">
       <Alert fluid type="info">Info message !</Alert>
       <Alert fluid type="success">Success message !</Alert>
