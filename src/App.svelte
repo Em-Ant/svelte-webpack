@@ -118,7 +118,7 @@
   }
 </style>
 
-<h1>Playground</h1>
+<h1>Components Playground</h1>
 <main>
   {#if checked}
     <Modal {footer} onClose mobile bind:open={checked}>
