@@ -22,7 +22,7 @@
     display: flex;
     min-height: 60px;
     min-width: 240px;
-    background-color: #ceeeec;
+    background-color: #fff;
     border: 1px solid #1b8d9b;
     border-radius: 4px;
     box-sizing: border-box;
@@ -32,15 +32,12 @@
     width: 100%;
   }
   div.wrap.warn {
-    background-color: #fcf0bd;
     border-color: #b69d03;
   }
   div.wrap.err {
-    background-color: #fddddd;
     border-color: #bb1a18;
   }
   div.wrap.ok {
-    background-color: #ecf2c2;
     border-color: #a2c14e;
   }
   div.wrap span.icon {
