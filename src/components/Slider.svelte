@@ -2,9 +2,8 @@
   export let  min = 0;
   export let max = 100;
   export let step = 1;
-  export let attrs = {};
   export let value = 0;
-  export let showPopover = false;
+  let showPopover = $$slots.popover;
 
   let progress;
   let arrow;
@@ -126,6 +125,9 @@
     width: 100%;
     margin: 0;
   }
+  div.wrap.mt {
+    margin-top: 40px;
+  }
 
   div.wrap:focus-within > div.track {
     box-shadow: inset 3px 3px 4px -1px rgba(0, 0, 0, 0.4), 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
@@ -135,8 +137,6 @@
     min-width: 80px;
     min-height: 32px;
     max-width: 254px;
-    display: flex;
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -159,25 +159,31 @@
     bottom: 37px;
     z-index: 1;
   }
+  div.outer {
+    display: flex;
+    margin-bottom: 8px;
+  }
 </style>
 
-<div class="wrap" bind:this={wrap}>
-  {#if showPopover}
-    <span class="arrow" bind:this={arrow} />
-    <div class="popover" bind:this={popover}>
-      <slot name="popover"></slot>
-    </div>
-  {/if}
-  <div class="track" />
-  <div class="progress" bind:this={progress}/>
-  <input
-    type="range"
-    min={min}
-    max={max}
-    step={step}
-    on:change
-    on:click
-    bind:value
-    {...attrs}
-  />
+<div class="outer">
+  <div class="wrap" class:mt={showPopover} bind:this={wrap}>
+    {#if showPopover}
+      <span class="arrow" bind:this={arrow} />
+      <div class="popover" bind:this={popover}>
+        <slot name="popover"></slot>
+      </div>
+    {/if}
+    <div class="track" />
+    <div class="progress" bind:this={progress}/>
+    <input
+      type="range"
+      min={min}
+      max={max}
+      step={step}
+      on:change
+      on:click
+      bind:value
+      {...$$restProps}
+    />
+  </div>
 </div>

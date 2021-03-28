@@ -54,7 +54,6 @@
     height: 24px;
     display: block;
     position: relative;
-    margin-right: 8px;
     flex-shrink: 0;
   }
   span.icon-bg > svg {
@@ -110,6 +109,9 @@
   input:focus + span.icon > span.icon-bg {
     box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
   }
+  span.label {
+    margin-left: 8px;
+  }
 </style>
 
 <div>
@@ -143,8 +145,10 @@
         </svg>
       </span>
     </span>
-    <span>
-      <slot />
-    </span>
+    {#if $$slots.default}
+      <span class=label>
+        <slot />
+      </span>
+    {/if}
   </label>
 </div>

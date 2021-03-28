@@ -2,7 +2,6 @@
   import Tooltip from "./Tooltip.svelte";
   import infoIcon from "../assets/info_light.svg";
 
-  export let info = false;
   export let infoOpen = false;
   export let attrs = {};
   export let infoAttrs = {};
@@ -59,7 +58,7 @@
   <label for={attrs.for} {...attrs}>
     <slot />
   </label>
-  {#if info}
+  {#if $$slots.info}
     <button
       on:click={onClick}
       on:click={onInfoClick}

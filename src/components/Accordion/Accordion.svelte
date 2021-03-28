@@ -6,16 +6,12 @@
 	import { setContext, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 
-  const rows = [];
   const active = writable(null);
 
   setContext(ACCORDION, {
 		registerRow: row => {
-			rows.push(row);
 			
 			onDestroy(() => {
-				const i = rows.indexOf(row);
-				rows.splice(i, 1);
 				active.update(current => current === row ? null : current);
 			});
 		},

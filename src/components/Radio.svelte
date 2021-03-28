@@ -43,7 +43,6 @@
   span.icon {
     padding: 0;
     margin: 0;
-    margin-right: 8px;
     height: 24px;
     width: 24px;
     border-radius: 50%;
@@ -93,6 +92,9 @@
   input:focus + span.icon {
     box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
   }
+    span.label {
+    margin-left: 8px;
+  }
 </style>
 
 <div>
@@ -111,8 +113,10 @@
       aria-invalid={error}
       type="radio" />
     <span class="icon" />
-    <span>
-      <slot />
-    </span>
+    {#if $$slots.default}
+      <span class=label>
+        <slot />
+      </span>
+    {/if}
   </label>
 </div>

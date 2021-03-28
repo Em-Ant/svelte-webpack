@@ -3,10 +3,7 @@
   export let error = "";
   export let value = "";
   export let disabled = undefined;
-  export let name = undefined;
-  export let id = undefined;
   export let fluid = undefined;
-  export let attrs = {};
   export let elem = undefined;
   function scroll(node, { delay = 50, duration = 100 }) {
     const height = node.scrollHeight;
@@ -134,9 +131,7 @@
       <input
         bind:this={elem}
         {disabled}
-        {name}
-        {id}
-        {...attrs}
+        {...$$restProps}
         bind:value
         on:change
         on:click />
