@@ -1,4 +1,6 @@
 <script>
+  import { onMount, onDestroy } from 'svelte';
+
   export let  min = 0;
   export let max = 100;
   export let step = 1;
@@ -10,7 +12,17 @@
   let wrap;
   let popover;
 
-  function getPositionData(value) {
+  const getData = () => {
+    return {
+      progress,
+      arrow,
+      popover,
+      wrap,
+      value
+    }
+  }
+
+  function getPosition(value, wrap) {
     const out = {}
     if(wrap) {
       const ratio = value / (max - min);
@@ -26,22 +38,32 @@
       out.popoverWidth = width;
     }
     return out;
-  }
-  $: {
-    const {x, popoverWidth, wrapRight, wrapLeft } = getPositionData(value);
-    if (arrow) arrow.style.left = `${x - 3}px`;
+  };
+
+  function setDynamicStyles(value, wrap, progress, popover, arrow) {
+    const {x, popoverWidth, wrapRight, wrapLeft } = getPosition(value, wrap);
+    if (arrow) arrow.style.left = `${x}px`;
     if (progress) progress.style.width = `${x}px`;
     if (popover) {
       popover.style.left = `${x - popoverWidth / 2}px`;
       const { left, right } = popover.getBoundingClientRect();
       if (right > wrapRight) {
-        popover.style.left = `${x - popoverWidth / 2 - (right -wrapRight)}px`;
+        popover.style.left = `${x - popoverWidth / 2 - (right - wrapRight)}px`;
       }
       if (left < wrapLeft) {
         popover.style.left = '0';
       }
     }
-  };
+  }
+  const onResize = () => {
+    const {value, wrap, progress, popover, arrow} = getData();
+    setDynamicStyles(value, wrap, progress, popover, arrow);
+  }
+  onMount(() => window.addEventListener('resize', onResize));
+  onDestroy(() => window.removeEventListener('resize', onResize));
+
+  $: setDynamicStyles(value, wrap, progress, popover, arrow);
+
 </script>
 
 <style>
@@ -155,7 +177,7 @@
     background-color: #1c818d;
     height: 6px;
     width: 6px;
-    transform: rotate(45deg);
+    transform: translateX(-3px) rotate(45deg);
     bottom: 37px;
     z-index: 1;
   }

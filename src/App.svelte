@@ -82,7 +82,7 @@
 
   div.wrap,
   form.wrap {
-    width: 300px;
+    width: 100%;
     height: 450px;
     margin: 0 16px 16px 0;
     background-color: #e2e2e2;
@@ -96,6 +96,9 @@
   @media (min-width: 640px) {
     main {
       max-width: none;
+    }
+    .wrap {
+      max-width: 300px;
     }
   }
   div.alerts {
