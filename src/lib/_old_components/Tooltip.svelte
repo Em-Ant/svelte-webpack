@@ -24,21 +24,21 @@
       {
         name: "offset",
         options: {
-          offset: [0, 10]
-        }
+          offset: [0, 10],
+        },
       },
       {
         name: "preventOverflow",
         options: {
           altAxis: true,
-          boundary: boundaryElem || "clippingParents"
-        }
+          boundary: boundaryElem || "clippingParents",
+        },
       },
       {
         name: "arrow",
         options: {
-          padding: 2
-        }
+          padding: 2,
+        },
       },
       {
         name: "flip",
@@ -53,12 +53,12 @@
             "top-end",
             "left-start",
             "left-end",
-            "left"
+            "left",
           ],
-          flipVariations: false
-        }
-      }
-    ]
+          flipVariations: false,
+        },
+      },
+    ],
   };
 
   $: if (ref && options && tooltip && attrs) {
@@ -78,10 +78,28 @@
       popper = null;
     }
   }
-  onDestroy(function() {
+  onDestroy(function () {
     destroy();
   });
 </script>
+
+{#if ref}
+  {#if elem}
+    <svelte:component this={elem} bind:ref={tooltip}>
+      <slot />
+    </svelte:component>
+  {:else}
+    <div
+      {attrs}
+      transition:fade={{ duration: 150 }}
+      class="tooltip"
+      bind:this={tooltip}
+    >
+      <div data-popper-arrow class="arrow" />
+      <slot />
+    </div>
+  {/if}
+{/if}
 
 <style>
   div.tooltip {
@@ -133,20 +151,3 @@
     left: -6px;
   }
 </style>
-
-{#if ref}
-  {#if elem}
-    <svelte:component this={elem} bind:ref={tooltip}>
-      <slot />
-    </svelte:component>
-  {:else}
-    <div
-      {attrs}
-      transition:fade={{ duration: 150 }}
-      class="tooltip"
-      bind:this={tooltip}>
-      <div data-popper-arrow class="arrow" />
-      <slot />
-    </div>
-  {/if}
-{/if}

@@ -7,6 +7,11 @@
   $: if (elem) elem.style.transform = `scaleX(${width})`;
 </script>
 
+<div class="indicator">
+  <span bind:this={elem} class="active" />
+  <span class="line" />
+</div>
+
 <style>
   div.indicator {
     margin-top: 4px;
@@ -31,8 +36,3 @@
     transform-origin: left;
   }
 </style>
-
-<div class="indicator">
-  <span bind:this={elem} class="active" />
-  <span class="line" />
-</div>

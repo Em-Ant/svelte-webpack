@@ -10,7 +10,7 @@
   let ind;
   let base;
   let wrap;
-  let _active = (elements.findIndex(d => d && d.active) + 1 || 1) - 1;
+  let _active = (elements.findIndex((d) => d && d.active) + 1 || 1) - 1;
   let _prev = _active;
   let animate_left = true;
   let _cw;
@@ -20,7 +20,7 @@
     _cw.style.minHeight = `${_c.getBoundingClientRect().height}px`;
 
   $: animate_left = _prev >= _active;
-  const handleSet = i => () => {
+  const handleSet = (i) => () => {
     _prev = _active;
     _active = i;
     const base = wrap.getBoundingClientRect().x;
@@ -28,7 +28,7 @@
     const r = active.getBoundingClientRect();
     ind.set({
       x: r.x - base,
-      w: r.width
+      w: r.width,
     });
   };
   onMount(() => {
@@ -38,11 +38,11 @@
     ind = spring(
       {
         x: r.x - base,
-        w: r.width
+        w: r.width,
       },
       {
         stiffness: 0.1,
-        damping: 0.5
+        damping: 0.5,
       }
     );
   });
@@ -54,13 +54,35 @@
     return {
       delay,
       duration,
-      css: t => {
+      css: (t) => {
         const _t = circInOut(t);
         return `transform: translateX(${m * w * (1 - _t)}px); opacity: ${t}`;
-      }
+      },
     };
   }
 </script>
+
+<div class="out">
+  <div class="wrap" bind:this={wrap}>
+    <div class="btns">
+      {#each elements as tab, i}
+        <button bind:this={_headers[i]} on:click={handleSet(i)}>
+          {tab.header}
+        </button>
+      {/each}
+    </div>
+    <Indicator left={ind && $ind.x} width={ind && $ind.w} />
+  </div>
+</div>
+<div class="content-wrap" bind:this={_cw}>
+  {#each elements as tab, i}
+    {#if _active === i}
+      <div class="content" bind:this={_c} in:fade out:fade={{ out: true }}>
+        {tab.component}
+      </div>
+    {/if}
+  {/each}
+</div>
 
 <style>
   div.btns {
@@ -108,25 +130,3 @@
     left: 0;
   }
 </style>
-
-<div class="out">
-  <div class="wrap" bind:this={wrap}>
-    <div class="btns">
-      {#each elements as tab, i}
-        <button bind:this={_headers[i]} on:click={handleSet(i)}>
-          {tab.header}
-        </button>
-      {/each}
-    </div>
-    <Indicator left={ind && $ind.x} width={ind && $ind.w} />
-  </div>
-</div>
-<div class="content-wrap" bind:this={_cw}>
-  {#each elements as tab, i}
-    {#if _active === i}
-      <div class="content" bind:this={_c} in:fade out:fade={{ out: true }}>
-        {tab.component}
-      </div>
-    {/if}
-  {/each}
-</div>

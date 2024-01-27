@@ -19,6 +19,29 @@
   }
 </script>
 
+<div class="wrap">
+  <label for={attrs.for} {...attrs}>
+    <slot />
+  </label>
+  {#if $$slots.info}
+    <button
+      on:click={onClick}
+      on:click={onInfoClick}
+      on:blur={onBlur}
+      on:blur={onInfoBlur}
+      bind:this={btn}
+      type="button"
+    >
+      {@html infoIcon}
+    </button>
+  {/if}
+  {#if infoOpen}
+    <Tooltip attrs={infoAttrs} ref={btn}>
+      <slot name="info" />
+    </Tooltip>
+  {/if}
+</div>
+
 <style>
   div.wrap {
     position: relative;
@@ -53,25 +76,3 @@
     box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
   }
 </style>
-
-<div class="wrap">
-  <label for={attrs.for} {...attrs}>
-    <slot />
-  </label>
-  {#if $$slots.info}
-    <button
-      on:click={onClick}
-      on:click={onInfoClick}
-      on:blur={onBlur}
-      on:blur={onInfoBlur}
-      bind:this={btn}
-      type="button">
-      {@html infoIcon}
-    </button>
-  {/if}
-  {#if infoOpen}
-    <Tooltip attrs={infoAttrs} ref={btn}>
-      <slot name="info" />
-    </Tooltip>
-  {/if}
-</div>
