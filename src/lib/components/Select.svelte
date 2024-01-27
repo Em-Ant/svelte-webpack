@@ -158,7 +158,9 @@
 	{#if open}
 		<div class:fluid in:enter out:enter={{ delay: 150 }} class="options">
 			{#each options as opt, i (typeof opt === 'string' ? opt : opt.key ?? opt.value)}
-				<button
+				<span
+					role="button"
+					tabindex="0"
 					bind:this={optionsElems[i]}
 					class:selected={opt === value}
 					class:active={opt === active}
@@ -166,7 +168,7 @@
 					on:mousedown={selectActive}
 				>
 					{typeof opt === 'string' ? opt : opt.name}
-				</button>
+				</span>
 			{/each}
 		</div>
 	{/if}
@@ -286,11 +288,13 @@
 		box-shadow: 0 2px 5px -1px rgba(0, 0, 0, 0.3);
 		max-height: 250px;
 		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
 	}
 	div.options.fluid {
 		max-width: 100%;
 	}
-	div.options > button {
+	div.options > span {
 		z-index: 3;
 		padding: 0 6px;
 		margin: 0;
@@ -301,13 +305,13 @@
 		cursor: pointer;
 		transition: background-color 0.1s ease-in-out;
 	}
-	div.options > button.active {
+	div.options > span.active {
 		background-color: #eee;
 	}
-	div.options > button.selected {
+	div.options > span.selected {
 		background-color: rgba(130, 204, 211, 0.4);
 	}
-	div.options > button.selected.active {
+	div.options > span.selected.active {
 		background-color: rgba(130, 204, 211, 0.5);
 	}
 	span.error-msg {
