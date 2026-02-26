@@ -1,11 +1,31 @@
-<script>
-  export let disabled = undefined;
-  export let checked = undefined;
-  export let error = undefined;
-  export let id = undefined;
-  export let name = undefined;
-  export let attrs = {};
-  export let elem = undefined;
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    disabled?: boolean;
+    checked?: boolean;
+    error?: boolean;
+    id?: string;
+    name?: string;
+    attrs?: Record<string, unknown>;
+    elem?: HTMLInputElement;
+    children?: Snippet;
+    onchange?: (e: Event) => void;
+    onclick?: (e: MouseEvent) => void;
+  }
+
+  let {
+    disabled = undefined,
+    checked = $bindable(undefined),
+    error = undefined,
+    id = undefined,
+    name = undefined,
+    attrs = {},
+    elem = undefined,
+    children,
+    onchange,
+    onclick
+  }: Props = $props();
 </script>
 
 <style>
@@ -123,9 +143,9 @@
       {name}
       bind:this={elem}
       bind:checked
-      on:change
-      on:click
-      aria-invalid={error}
+      onchange={onchange}
+      onclick={onclick}
+      aria-invalid={error ? "true" : undefined}
       type="checkbox" />
     <span class="icon">
       <span class="icon-bg">
@@ -145,9 +165,9 @@
         </svg>
       </span>
     </span>
-    {#if $$slots.default}
-      <span class=label>
-        <slot />
+    {#if children}
+      <span class="label">
+        {@render children()}
       </span>
     {/if}
   </label>

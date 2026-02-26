@@ -1,14 +1,35 @@
-<script>
-  export let disabled = false;
-  export let id = undefined;
-  export let loading = undefined;
-  export let success = undefined;
-  export let fluid = false;
-  export let small = false;
-  export let secondary = false;
-  export let type = 'button';
-  export let attrs = {};
-  export let elem = undefined;
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    disabled?: boolean;
+    id?: string;
+    loading?: boolean;
+    success?: boolean;
+    fluid?: boolean;
+    small?: boolean;
+    secondary?: boolean;
+    type?: "button" | "submit" | "reset";
+    attrs?: Record<string, unknown>;
+    elem?: HTMLButtonElement;
+    children?: Snippet;
+    onclick?: (e: MouseEvent) => void;
+  }
+
+  let {
+    disabled = false,
+    id = undefined,
+    loading = undefined,
+    success = undefined,
+    fluid = false,
+    small = false,
+    secondary = false,
+    type = 'button',
+    attrs = {},
+    elem = undefined,
+    children,
+    onclick
+  }: Props = $props();
 </script>
 
 <button
@@ -16,7 +37,7 @@
   class:small
   class:secondary
   bind:this={elem}
-  on:click
+  {onclick}
   {disabled}
   {id}
   {type}
@@ -68,8 +89,8 @@
         stroke-width="2.6"
       />
     </svg>
-  {:else}
-    <slot />
+  {:else if children}
+    {@render children()}
   {/if}
 </button>
 

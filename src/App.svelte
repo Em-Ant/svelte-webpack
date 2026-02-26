@@ -1,55 +1,140 @@
-<script>
-  import Checkbox from "./components/Checkbox.svelte";
-  import Radio from "./components/Radio.svelte";
-  import Button from "./components/Button.svelte";
-  import Input from "./components/Input.svelte";
-  import { Accordion, Row } from "./components/Accordion";
-  import Select from "./components/Select.svelte";
-  import Alert from "./components/Alert.svelte";
-  import Toggle from "./components/Toggle.svelte";
-  import Modal from "./components/Modal.svelte";
-  import Label from "./components/Label.svelte";
-  import Tabs from "./components/Tabs.svelte";
-  import Slider from "./components/Slider.svelte";
-  let checked = false;
-  let disabled = false;
-  let on;
-  let loading;
-  let success;
-  let error;
-  let group;
-  let value = "";
-  let input;
+<script lang="ts">
+  import Checkbox from './components/Checkbox.svelte';
+  import Radio from './components/Radio.svelte';
+  import Button from './components/Button.svelte';
+  import Input from './components/Input.svelte';
+  import { Accordion, Row } from './components/Accordion';
+  import Select from './components/Select.svelte';
+  import Alert from './components/Alert.svelte';
+  import Toggle from './components/Toggle.svelte';
+  import Modal from './components/Modal.svelte';
+  import Label from './components/Label.svelte';
+  import Tabs from './components/Tabs.svelte';
+  import Slider from './components/Slider.svelte';
 
-  let sliderVal;
+  let checked = $state(false);
+  let disabled = $state(false);
+  let on = $state<boolean | undefined>(undefined);
+  let loading = $state<boolean | undefined>(undefined);
+  let success = $state<boolean | undefined>(undefined);
+  let error = $state<boolean | undefined>(undefined);
+  let group = $state<string | undefined>(undefined);
+  let value = $state('');
+  let input = $state<HTMLInputElement | undefined>(undefined);
 
-  let options = ["option 1", "option 2", "option 3", "option 4"];
+  let sliderVal = $state(0);
 
-  let footer = false;
+  let options = ['option 1', 'option 2', 'option 3', 'option 4'];
 
-  $: if (!checked) {
-    setTimeout(function() {
-      success = false;
-      footer = false;
-    }, 500);
-  }
+  let footer = $state(false);
+  let open = $state(false);
 
-  $: err = error || value === "error" ? "error message test" : "";
+  $effect(() => {
+    if (!checked) {
+      setTimeout(function () {
+        success = false;
+        footer = false;
+      }, 500);
+    }
+  });
+
+  let err = $derived(error || value === 'error' ? 'error message test' : '');
 
   function click() {
     loading = true;
-    setTimeout(function() {
+    setTimeout(function () {
       loading = false;
       success = true;
       open = true;
-      input && input.focus();
+      input?.focus();
     }, 1500);
-    setTimeout(function() {
+    setTimeout(function () {
       footer = false;
       checked = false;
     }, 2000);
   }
 </script>
+
+<h1>Components Playground</h1>
+<main>
+  {#if checked}
+    <Modal {footer} onClose={close} mobile bind:open={checked}>
+      {#snippet header()}
+        <h3>Modal</h3>
+      {/snippet}
+      <div class="t" onclick={() => (footer = !footer)}></div>
+      {#snippet footerSlot()}
+        <div class="btn">
+          <Button fluid onclick={click} {loading} {success} {disabled}>
+            Click me !
+          </Button>
+        </div>
+      {/snippet}
+    </Modal>
+  {/if}
+  <form class="wrap pad">
+    <Checkbox {disabled} name="visible" bind:checked>open modal</Checkbox>
+    <Checkbox name="disabled" bind:checked={disabled}>disabled</Checkbox>
+    <Checkbox name="error" error bind:checked={error}>error</Checkbox>
+    <Radio name="radio" bind:group value="1">option 1</Radio>
+    <Radio {disabled} name="radio" bind:group value="2">option 2</Radio>
+    <Radio name="radio" bind:group {error} value="3">option 3</Radio>
+    <Toggle name="toggle_1" bind:on>toggle 1</Toggle>
+    <Toggle name="toggle_2" on={!on} {disabled} {error}>toggle 2</Toggle>
+    <Label info>
+      <span>label</span>
+      <span slot="info">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.
+      </span>
+    </Label>
+    <Select {options} name="select" {disabled} error={err} />
+    <Input
+      name="input"
+      bind:elem={input}
+      {disabled}
+      error={err}
+      bind:value
+      postfix="$"
+    />
+    <Button {disabled} secondary={on} type="submit">Submit</Button>
+  </form>
+  <div class="wrap pad">
+    <Accordion>
+      <Row>
+        {#snippet header()}
+          <span>Click Me!</span>
+        {/snippet}
+        <p>test</p>
+      </Row>
+      <Row>
+        {#snippet header()}
+          <span>Named slot</span>
+        {/snippet}
+        <p>test II</p>
+      </Row>
+    </Accordion>
+    <div class="alerts">
+      <Alert fluid type="info">Info message !</Alert>
+      <Alert fluid type="success">Success message !</Alert>
+      <Alert fluid type="warn">Warning message !</Alert>
+      <Alert fluid type="error">Error message !</Alert>
+    </div>
+  </div>
+  <div class="wrap pad">
+    <Tabs
+      elements={[
+        { header: 'Tab 1', component: 'Test 1' },
+        { header: 'Tab 2', component: 'Test 2' },
+        { header: 'Tab 3', component: 'Test 3' },
+      ]}
+    />
+    <div style="height: 60px;"></div>
+    <Slider step={10} bind:value={sliderVal}>
+      <span slot="popover">{`${sliderVal} %`}</span>
+    </Slider>
+  </div>
+</main>
 
 <style>
   main {
@@ -60,13 +145,13 @@
     color: #333;
     display: flex;
     flex-wrap: wrap;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
   }
 
   h1 {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
     color: #ff3e00;
     text-transform: uppercase;
     font-size: 1em;
@@ -120,71 +205,3 @@
     align-items: center;
   }
 </style>
-
-<h1>Components Playground</h1>
-<main>
-  {#if checked}
-    <Modal {footer} onClose mobile bind:open={checked}>
-      <h3 slot="header">Modal</h3>
-      <div class="t" on:click={() => (footer = !footer)} />
-      <div class="btn" slot="footer">
-        <Button fluid on:click={click} {loading} {success} {disabled}>
-          Click me !
-        </Button>
-      </div>
-
-    </Modal>
-  {/if}
-  <form class="wrap pad">
-    <Checkbox {disabled} name="visible" bind:checked>open modal</Checkbox>
-    <Checkbox name="disabled" bind:checked={disabled}>disabled</Checkbox>
-    <Checkbox name="error" error bind:checked={error}>error</Checkbox>
-    <Radio name="radio" bind:group value="1">option 1</Radio>
-    <Radio {disabled} name="radio" bind:group value="2">option 2</Radio>
-    <Radio name="radio" bind:group {error} value="3">option 3</Radio>
-    <Toggle name="toggle_1" bind:on>toggle 1</Toggle>
-    <Toggle name="toggle_2" on={!on} {disabled} {error}>toggle 2</Toggle>
-    <Label info>
-      <span>label</span>
-      <span slot="info">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-      </span>
-    </Label>
-    <Select {options} name="select" {disabled} error={err} />
-    <Input
-      name="input"
-      bind:elem={input}
-      {disabled}
-      error={err}
-      bind:value
-      postfix="$" />
-    <Button {disabled} secondary={on} type="submit">Submit</Button>
-  </form>
-  <div class="wrap pad">
-    <Accordion>
-      <Row>
-        <span slot="header">Click Me!</span>
-        <p>test</p>
-      </Row>
-      <Row>
-        <span slot="header">Named slot</span>
-        <p>test II</p>
-      </Row>
-    </Accordion>
-    <div class="alerts">
-      <Alert fluid type="info">Info message !</Alert>
-      <Alert fluid type="success">Success message !</Alert>
-      <Alert fluid type="warn">Warning message !</Alert>
-      <Alert fluid type="error">Error message !</Alert>
-    </div>
-  </div>
-  <div class="wrap pad">
-    <Tabs
-      elements={[{ header: 'Tab 1', component: 'Test 1' }, { header: 'Tab 2', component: 'Test 2' }, { header: 'Tab 3', component: 'Test 3' }]} />
-    <div style="height: 60px;"></div>
-    <Slider step={10} showPopover bind:value={sliderVal}>
-      <span slot="popover">{`${sliderVal} %`}</span>
-    </Slider>
-  </div>
-</main>

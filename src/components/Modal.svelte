@@ -1,78 +1,103 @@
-<script>
+<script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { fade, fly } from "svelte/transition";
   import { circInOut } from "svelte/easing";
+  import type { Snippet } from 'svelte';
 
   import cross from "../assets/cross.svg?raw";
 
-  export let footer = false;
-  export let mobile = false;
-  export let open = false;
-  export let onClose;
-  export let autofocus = false;
+  interface Props {
+    footer?: boolean;
+    mobile?: boolean;
+    open?: boolean;
+    onClose?: () => void;
+    autofocus?: boolean;
+    children?: Snippet;
+    header?: Snippet;
+    footerSlot?: Snippet;
+  }
 
-  let close;
-  let isMobile;
-  let modal;
-  let modalHeight = 200;
+  let {
+    footer = false,
+    mobile = false,
+    open = $bindable(false),
+    onClose = undefined,
+    autofocus = false,
+    children,
+    header,
+    footerSlot
+  }: Props = $props();
+
+  let close: HTMLButtonElement | undefined = $state();
+  let isMobile = $state(false);
+  let modal: HTMLDivElement | undefined = $state();
+  let modalHeight = $state(200);
+
+  let shadow_f = $state(false);
+  let shadow_h = $state(false);
+  let content: HTMLDivElement | undefined = $state();
+
+  let nonModalNodes: NodeListOf<Element> | undefined = $state();
 
   function setIsMobile() {
     const { width } = document.body.getBoundingClientRect();
     if (width <= 400) isMobile = true;
     else isMobile = false;
   }
-  setIsMobile();
 
-  $: fly_y = mobile && isMobile ? modalHeight : -80;
-  let shadow_f = false,
-    shadow_h = false,
-    content;
+  let fly_y = $derived(mobile && isMobile ? modalHeight : -80);
 
   function setShadows() {
+    if (!content) return;
     shadow_h = content.scrollTop !== 0;
     shadow_f =
       content.scrollHeight - content.scrollTop !== content.clientHeight &&
       content.scrollHeight !== content.clientHeight;
   }
-  $: if (footer) {
-    setTimeout(setShadows, 100);
-  }
 
-  let nonModalNodes;
+  $effect(() => {
+    if (footer) {
+      setTimeout(setShadows, 100);
+    }
+  });
+
   function lockFocus() {
     const modalNodes = Array.from(
       document.querySelectorAll("div[data-lock] *")
     );
     nonModalNodes = document.querySelectorAll('body *:not([tabindex="-1"])');
 
-    for (var i = 0; i < nonModalNodes.length; i++) {
-      var node = nonModalNodes[i];
-
+    for (let i = 0; i < nonModalNodes.length; i++) {
+      const node = nonModalNodes[i] as HTMLElement;
       if (!modalNodes.includes(node)) {
-        node._prevTabindex = node.getAttribute("tabindex");
-        node.setAttribute("tabindex", -1);
+        (node as any)._prevTabindex = node.getAttribute("tabindex");
+        node.setAttribute("tabindex", "-1");
         node.style.outline = "none";
       }
     }
   }
+
   function unlockFocus() {
-    for (var i = 0; i < nonModalNodes.length; i++) {
-      var node = nonModalNodes[i];
-      if (node._prevTabindex) {
-        node.setAttribute("tabindex", node._prevTabindex);
-        node._prevTabindex = null;
+    if (!nonModalNodes) return;
+    for (let i = 0; i < nonModalNodes.length; i++) {
+      const node = nonModalNodes[i] as HTMLElement;
+      if ((node as any)._prevTabindex) {
+        node.setAttribute("tabindex", (node as any)._prevTabindex);
+        (node as any)._prevTabindex = null;
       } else {
         node.removeAttribute("tabindex");
       }
-      node.style.outline = null;
+      node.style.outline = "";
     }
   }
+
   function lockScroll() {
     document.documentElement.style.overflow = "hidden";
     document.documentElement.style.height = "100vh";
     document.body.style.overflow = "hidden";
     document.body.style.height = "100vh";
   }
+
   function unlockScroll() {
     document.documentElement.style.overflow = "";
     document.documentElement.style.height = "auto";
@@ -81,12 +106,20 @@
   }
 
   function focusCloseBtn() {
-    if (autofocus && onClose) {
+    if (autofocus && onClose && close) {
       close.focus();
     }
   }
 
+  function handleClose() {
+    open = false;
+    if (onClose && typeof onClose === 'function') {
+      onClose();
+    }
+  }
+
   onMount(function() {
+    if (!modal) return;
     const { height } = modal.getBoundingClientRect();
     modalHeight = height;
     setShadows();
@@ -94,11 +127,56 @@
     lockScroll();
     focusCloseBtn();
   });
+
   onDestroy(function() {
     unlockFocus();
     unlockScroll();
   });
 </script>
+
+<svelte:window onresize={setIsMobile} />
+<div data-lock>
+  <div
+    class="backdrop"
+    in:fade={{ duration: 200, easing: circInOut }}
+    out:fade={{ delay: 100, duration: 200, easing: circInOut }}></div>
+  <div
+    class="modal"
+    class:mobile
+    bind:this={modal}
+    in:fly={{ delay: 200, y: fly_y, duration: 200 }}
+    out:fly={{ y: fly_y, duration: 200 }}>
+    <div class="header" class:shadow={shadow_h}>
+      <div class="header-content">
+        {#if header}
+          {@render header()}
+        {/if}
+      </div>
+      {#if onClose}
+        <span class="close">
+          <button
+            bind:this={close}
+            class="close"
+            onclick={handleClose}>
+            {@html cross}
+          </button>
+        </span>
+      {/if}
+    </div>
+    <div bind:this={content} onscroll={setShadows} class="content">
+      {#if children}
+        {@render children()}
+      {/if}
+    </div>
+    <div class="footer" class:in={footer} class:shadow={shadow_f && footer}>
+      <div class="inner">
+        {#if footerSlot}
+          {@render footerSlot()}
+        {/if}
+      </div>
+    </div>
+  </div>
+</div>
 
 <style>
   div[data-lock] {
@@ -224,46 +302,3 @@
     }
   }
 </style>
-
-<svelte:window on:resize={setIsMobile} />
-<div data-lock>
-  <div
-    class="backdrop"
-    in:fade={{ duration: 200, easing: circInOut }}
-    out:fade={{ delay: 100, duration: 200, easing: circInOut }} />
-  <div
-    class="modal"
-    class:mobile
-    bind:this={modal}
-    in:fly={{ delay: 200, y: fly_y, duration: 200 }}
-    out:fly={{ y: fly_y, duration: 200 }}>
-    <div class="header" class:shadow={shadow_h}>
-      <div class="header-content">
-        <slot name="header" />
-      </div>
-      {#if onClose}
-        <span class="close">
-          <button
-            bind:this={close}
-            class="close"
-            on:click={() => {
-              open = false;
-              if (onClose && typeof onClose === 'function') {
-                onClose();
-              }
-            }}>
-            {@html cross}
-          </button>
-        </span>
-      {/if}
-    </div>
-    <div bind:this={content} on:scroll={setShadows} class="content">
-      <slot />
-    </div>
-    <div class="footer" class:in={footer} class:shadow={shadow_f && footer}>
-      <div class="inner">
-        <slot name="footer" />
-      </div>
-    </div>
-  </div>
-</div>

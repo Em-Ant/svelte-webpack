@@ -1,16 +1,65 @@
-<script>
-  export let disabled = undefined;
-  export let error = undefined;
-  export let id = undefined;
-  export let value = undefined;
-  export let name = undefined;
-  export let group = undefined;
-  export let attrs = {};
-  export let elem = undefined;
-  function onChange(e) {
-    if (e.target.checked) group = e.target.value;
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    disabled?: boolean;
+    error?: boolean;
+    id?: string;
+    value?: string;
+    name?: string;
+    group?: string;
+    attrs?: Record<string, unknown>;
+    elem?: HTMLInputElement;
+    children?: Snippet;
+    onchange?: (e: Event) => void;
+    onclick?: (e: MouseEvent) => void;
+  }
+
+  let {
+    disabled = undefined,
+    error = undefined,
+    id = undefined,
+    value = undefined,
+    name = undefined,
+    group = $bindable(undefined),
+    attrs = {},
+    elem = undefined,
+    children,
+    onchange,
+    onclick,
+  }: Props = $props();
+
+  function handleChange(e: Event) {
+    const target = e.target as HTMLInputElement;
+    if (target.checked) group = target.value;
   }
 </script>
+
+<div>
+  <label class:disabled>
+    <input
+      {...attrs}
+      {disabled}
+      {id}
+      {value}
+      {name}
+      bind:this={elem}
+      checked={!!group && group === value}
+      onchange={(e) => {
+        handleChange(e);
+        onchange?.(e);
+      }}
+      {onclick}
+      type="radio"
+    />
+    <span class="icon"></span>
+    {#if children}
+      <span class="label">
+        {@render children()}
+      </span>
+    {/if}
+  </label>
+</div>
 
 <style>
   label {
@@ -20,7 +69,7 @@
     display: inline-flex;
     position: relative;
     align-items: center;
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: 14px;
     line-height: 16px;
     margin-bottom: 8px;
@@ -54,7 +103,10 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    transition: border 0.1s ease-out, background-color 0.1s ease, box-shadow,
+    transition:
+      border 0.1s ease-out,
+      background-color 0.1s ease,
+      box-shadow,
       0.1s ease;
   }
 
@@ -63,7 +115,7 @@
     background-color: #1e838f;
   }
   input + span.icon:after {
-    content: "";
+    content: '';
     display: block;
     height: 12px;
     width: 12px;
@@ -75,11 +127,11 @@
   input:checked + span.icon:after {
     transform: scale(1);
   }
-  input[aria-invalid="true"] + span.icon {
+  input[aria-invalid='true'] + span.icon {
     border: 2px solid #bb1b18;
     background-color: white;
   }
-  input[aria-invalid="true"]:checked + span.icon:after {
+  input[aria-invalid='true']:checked + span.icon:after {
     background-color: #bb1b18;
   }
   input:disabled + span.icon {
@@ -90,33 +142,11 @@
     background-color: #999;
   }
   input:focus + span.icon {
-    box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
+    box-shadow:
+      0 0 1px 1px #f2f2f2,
+      0 0 1px 3px rgba(28, 129, 141, 1);
   }
-    span.label {
+  span.label {
     margin-left: 8px;
   }
 </style>
-
-<div>
-  <label class:disabled>
-    <input
-      {...attrs}
-      {disabled}
-      {id}
-      {value}
-      {name}
-      bind:this={elem}
-      checked={group && group === value}
-      on:change={onChange}
-      on:change
-      on:click
-      aria-invalid={error}
-      type="radio" />
-    <span class="icon" />
-    {#if $$slots.default}
-      <span class=label>
-        <slot />
-      </span>
-    {/if}
-  </label>
-</div>

@@ -1,21 +1,45 @@
-<script>
-  import info from "../assets/info.svg?raw";
-  import danger from "../assets/danger.svg?raw";
-  import warning from "../assets/warning.svg?raw";
-  import success from "../assets/success.svg?raw";
-  export let type = "info";
-  export let fluid = false;
-  let warn, err, ok, icon;
-  icon = info;
-  $: {
-    warn = type === "warn";
-    err = type === "error";
-    ok = type === "success";
+<script lang="ts">
+  import info from '../assets/info.svg?raw';
+  import danger from '../assets/danger.svg?raw';
+  import warning from '../assets/warning.svg?raw';
+  import success from '../assets/success.svg?raw';
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    type?: 'info' | 'warn' | 'error' | 'success';
+    fluid?: boolean;
+    children?: Snippet;
+  }
+
+  let { type = 'info', fluid = false, children }: Props = $props();
+
+  let warn = $state(false);
+  let err = $state(false);
+  let ok = $state(false);
+  let icon = $state(info);
+
+  $effect(() => {
+    warn = type === 'warn';
+    err = type === 'error';
+    ok = type === 'success';
     if (warn) icon = warning;
     if (err) icon = danger;
     if (ok) icon = success;
-  }
+  });
 </script>
+
+<div class:fluid class:warn class:err class:ok class="wrap">
+  <span class="icon">
+    {@html icon}
+  </span>
+  <div class="content">
+    <div>
+      {#if children}
+        {@render children()}
+      {/if}
+    </div>
+  </div>
+</div>
 
 <style>
   div.wrap {
@@ -50,7 +74,7 @@
     margin-right: 8px;
   }
   div.wrap div.content {
-    font-family: "Open Sans";
+    font-family: 'Open Sans';
     font-size: 14px;
     color: #282828;
     line-height: 16px;
@@ -58,14 +82,3 @@
     align-items: center;
   }
 </style>
-
-<div class:fluid class:warn class:err class:ok class="wrap">
-  <span class="icon">
-    {@html icon}
-  </span>
-  <div class="content">
-    <div>
-      <slot />
-    </div>
-  </div>
-</div>

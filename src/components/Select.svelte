@@ -1,54 +1,85 @@
-<script>
-  import { tick } from "svelte";
-  export let options = [];
-  export let value = undefined;
-  export let elem = undefined;
-  export let error = false;
-  export let fluid = false;
-  export let disabled = false;
-  export let name = "select";
-  export let attrs = {};
-  let open = false;
-  function enter(node, { delay = 0, duration = 100 }) {
+<script lang="ts">
+  import { tick } from 'svelte';
+  import type { TransitionConfig } from 'svelte/transition';
+  import Button from './Button.svelte';
+
+  interface Option {
+    name?: string;
+    value?: string;
+    key?: string;
+    [key: string]: unknown;
+  }
+
+  interface Props {
+    options?: Option[];
+    value?: Option | string;
+    elem?: HTMLInputElement;
+    error?: string | boolean;
+    fluid?: boolean;
+    disabled?: boolean;
+    name?: string;
+    attrs?: Record<string, unknown>;
+    onclick?: (e: MouseEvent) => void;
+  }
+
+  let {
+    options = [],
+    value = $bindable(undefined),
+    elem = $bindable(undefined),
+    error = false,
+    fluid = false,
+    disabled = false,
+    name = 'select',
+    attrs = {},
+    onclick,
+  }: Props = $props();
+
+  let open = $state(false);
+
+  function enter(node: HTMLElement, params?: { delay?: number; duration?: number }): TransitionConfig {
     const height = node.scrollHeight;
     return {
-      delay,
-      duration,
-      css: t => `height: ${t * height}px; overflow-y: hidden;`
+      delay: params?.delay ?? 0,
+      duration: params?.duration ?? 100,
+      css: (t: number) => `height: ${t * height}px; overflow-y: hidden;`,
     };
   }
-  let active;
-  let optionsElems = [];
+
+  let active: Option | string | undefined = $state();
+  let optionsElems: HTMLParagraphElement[] = $state([]);
+
   function next() {
     if (!options.length) return;
     if (active === undefined) {
       value ? (active = value) : (active = options[0]);
       return;
     }
-    const i = options.indexOf(active);
+    const i = options.indexOf(active as Option);
     if (i === options.length - 1) {
       active = options[0];
-      optionsElems[0].scrollIntoView();
+      optionsElems[0]?.scrollIntoView();
     } else {
       active = options[i + 1];
-      optionsElems[i + 1].scrollIntoView();
+      optionsElems[i + 1]?.scrollIntoView();
     }
   }
-  function prev(index) {
+
+  function prev() {
     if (!options.length) return null;
     if (active === undefined) {
       value ? (active = value) : (active = options[0]);
       return;
     }
-    const i = options.indexOf(active);
+    const i = options.indexOf(active as Option);
     if (i === 0) {
       active = options[options.length - 1];
-      optionsElems[options.length - 1].scrollIntoView();
+      optionsElems[options.length - 1]?.scrollIntoView();
     } else {
       active = options[i - 1];
-      optionsElems[i - 1].scrollIntoView();
+      optionsElems[i - 1]?.scrollIntoView();
     }
   }
+
   function toggle() {
     if (open) {
       active = undefined;
@@ -57,31 +88,34 @@
     }
     open = !open;
   }
+
   function close() {
     active = undefined;
     open = false;
   }
-  async function selectActive(e) {
-    e && e.preventDefault();
-    value = active;
+
+  async function selectActive(e?: MouseEvent) {
+    e?.preventDefault();
+    value = active as Option | string;
     active = undefined;
     await tick;
     open = false;
   }
-  function handleKeyPress(e) {
+
+  function handleKeyPress(e: KeyboardEvent) {
     switch (e.code) {
-      case "ArrowRight":
-      case "ArrowDown":
+      case 'ArrowRight':
+      case 'ArrowDown':
         e.preventDefault();
         next();
         break;
-      case "ArrowLeft":
-      case "ArrowUp":
+      case 'ArrowLeft':
+      case 'ArrowUp':
         e.preventDefault();
         prev();
         break;
-      case "Enter":
-      case "Space":
+      case 'Enter':
+      case 'Space':
         e.preventDefault();
         if (active) return selectActive();
         toggle();
@@ -90,13 +124,107 @@
         return;
     }
   }
+
+  function getValueName(opt: Option | string): string {
+    if (opt && typeof opt === 'object' && 'name' in opt) {
+      return (opt as Option).name || '';
+    }
+    return String(opt || '');
+  }
 </script>
+
+<div class="wrap">
+  <div class="inner" class:fluid>
+    <button
+      class="select"
+      tabindex="-1"
+      {disabled}
+      class:error
+      type="button"
+      onclick={(e) => {
+        onclick?.(e);
+        toggle();
+      }}
+      onmousedown={(e) => {
+        e.preventDefault();
+        elem?.focus();
+      }}
+    >
+      <span class="value">{getValueName(value as Option | string)}</span>
+      <input
+        {name}
+        {...attrs}
+        {disabled}
+        onblur={close}
+        bind:this={elem}
+        readonly
+        value={getValueName(value as Option | string)}
+        onkeydown={handleKeyPress}
+      />
+      <span class="icon" class:open>
+        <svg
+          width="12"
+          height="12"
+          version="1.1"
+          viewBox="0 0 4.7625 4.7625"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g transform="translate(-52.338 -89.642)">
+            <path
+              d="m54.719 94.086-2.3812-4.1244h4.7625z"
+              fill="#282828"
+              opacity=".97"
+              style="paint-order:markers fill stroke"
+            />
+          </g>
+        </svg>
+      </span>
+    </button>
+    <span class="error-icon" class:in={!!error} class:disabled>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12
+          2zm0 11c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1
+          1zm1 4h-2v-2h2v2z"
+        />
+      </svg>
+    </span>
+  </div>
+  {#if open}
+    <div class="options" class:fluid in:enter out:enter={{ delay: 150 }}>
+      {#each options as opt, i (opt && (opt.key || opt.value || opt))}
+        <div
+          tabindex="-1"
+          role="button"
+          bind:this={optionsElems[i]}
+          class:selected={opt === value}
+          class:active={opt === active}
+          onmouseenter={(e) => {
+            e.preventDefault();
+            active = opt;
+          }}
+          onmousedown={selectActive}
+        >
+          {getValueName(opt)}
+        </div>
+      {/each}
+    </div>
+  {/if}
+  {#if error}
+    <span transition:enter class:disabled class="error-msg">{error}</span>
+  {/if}
+</div>
 
 <style>
   div.wrap {
     position: relative;
     min-height: 56px;
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Open Sans', sans-serif;
   }
   div.inner {
     display: flex;
@@ -126,7 +254,9 @@
     outline: none;
   }
   button.select:focus-within {
-    box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
+    box-shadow:
+      0 0 1px 1px #f2f2f2,
+      0 0 1px 3px rgba(28, 129, 141, 1);
   }
   button.select > span.value {
     flex-grow: 1;
@@ -205,7 +335,7 @@
   div.options.fluid {
     max-width: 100%;
   }
-  div.options > p {
+  div.options > div {
     z-index: 3;
     padding: 0 6px;
     margin: 0;
@@ -216,13 +346,13 @@
     cursor: pointer;
     transition: background-color 0.1s ease-in-out;
   }
-  div.options > p.active {
+  div.options > div.active {
     background-color: #eee;
   }
-  div.options > p.selected {
+  div.options > div.selected {
     background-color: rgba(130, 204, 211, 0.4);
   }
-  div.options > p.selected.active {
+  div.options > div.selected.active {
     background-color: rgba(130, 204, 211, 0.5);
   }
   span.error-msg {
@@ -238,75 +368,3 @@
     color: #999;
   }
 </style>
-
-<div class="wrap">
-  <div class="inner" class:fluid>
-    <button
-      class="select"
-      tabindex="-1"
-      {disabled}
-      class:error
-      type="button"
-      on:click
-      on:click|preventDefault={toggle}
-      on:mousedown|preventDefault={() => {
-        elem.focus();
-      }}>
-      <span class="value">{(value && (value.name || value)) || ''}</span>
-      <input
-        {name}
-        {...attrs}
-        {disabled}
-        on:blur={close}
-        bind:this={elem}
-        readonly
-        value={value && (value.name || value)}
-        on:keydown={handleKeyPress} />
-      <span class="icon" class:open>
-        <svg
-          width="12"
-          height="12"
-          version="1.1"
-          viewBox="0 0 4.7625 4.7625"
-          xmlns="http://www.w3.org/2000/svg">
-          <g transform="translate(-52.338 -89.642)">
-            <path
-              d="m54.719 94.086-2.3812-4.1244h4.7625z"
-              fill="#282828"
-              opacity=".97"
-              style="paint-order:markers fill stroke" />
-          </g>
-        </svg>
-      </span>
-    </button>
-    <span class="error-icon" class:in={!!error} class:disabled>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="22"
-        height="22"
-        viewBox="0 0 24 24">
-        <path
-          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12
-          2zm0 11c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1s1 .45 1 1v4c0 .55-.45 1-1
-          1zm1 4h-2v-2h2v2z" />
-      </svg>
-    </span>
-  </div>
-  {#if open}
-    <div class:fluid in:enter out:enter={{ delay: 150 }} class="options">
-      {#each options as opt, i (opt && (opt.key || opt.value || opt))}
-        <p
-          bind:this={optionsElems[i]}
-          class:selected={opt === value}
-          class:active={opt === active}
-          on:mouseenter|preventDefault={() => (active = opt)}
-          on:mousedown={selectActive}>
-          {opt && (opt.name || opt)}
-        </p>
-      {/each}
-    </div>
-  {/if}
-  {#if error}
-    <span transition:enter class:disabled class="error-msg">{error}</span>
-  {/if}
-</div>

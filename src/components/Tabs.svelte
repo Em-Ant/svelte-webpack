@@ -1,66 +1,113 @@
-<script>
-  import Indicator from "./Indicator.svelte";
-  import { onMount } from "svelte";
-  import { spring } from "svelte/motion";
-  import { circInOut } from "svelte/easing";
+<script lang="ts">
+  import Indicator from './Indicator.svelte';
+  import { onMount } from 'svelte';
+  import { spring, type Spring } from 'svelte/motion';
+  import { circInOut } from 'svelte/easing';
+  import type { TransitionConfig } from 'svelte/transition';
 
-  export let elements = [];
+  interface TabElement {
+    header: string;
+    component?: string;
+    active?: boolean;
+    [key: string]: unknown;
+  }
 
-  let _headers = [];
-  let ind;
-  let base;
-  let wrap;
-  let _active = (elements.findIndex(d => d && d.active) + 1 || 1) - 1;
-  let _prev = _active;
-  let animate_left = true;
-  let _cw;
-  let _c;
+  interface Props {
+    elements?: TabElement[];
+  }
 
-  $: if (_c && _cw)
-    _cw.style.minHeight = `${_c.getBoundingClientRect().height}px`;
+  let { elements = [] }: Props = $props();
 
-  $: animate_left = _prev >= _active;
-  const handleSet = i => () => {
-    _prev = _active;
-    _active = i;
-    const base = wrap.getBoundingClientRect().x;
-    const active = _headers[_active];
-    const r = active.getBoundingClientRect();
-    ind.set({
-      x: r.x - base,
-      w: r.width
-    });
-  };
-  onMount(() => {
-    const base = wrap.getBoundingClientRect().x;
-    const active = _headers[_active];
-    const r = active.getBoundingClientRect();
-    ind = spring(
-      {
-        x: r.x - base,
-        w: r.width
-      },
-      {
-        stiffness: 0.1,
-        damping: 0.5
-      }
-    );
+  let _headers: HTMLButtonElement[] = $state([]);
+  let ind: Spring<{ x: number; w: number }> | undefined = $state();
+  let base: number = $state(0);
+  let wrap: HTMLDivElement | undefined = $state();
+  let _active = $state((elements.findIndex((d) => d && d.active) + 1 || 1) - 1);
+  let _prev = $state(_active);
+  let animate_left = $derived(_prev >= _active);
+  let _cw: HTMLDivElement | undefined = $state();
+  let _c: HTMLDivElement | undefined = $state();
+
+  $effect(() => {
+    if (_c && _cw) {
+      _cw.style.minHeight = `${_c.getBoundingClientRect().height}px`;
+    }
   });
 
-  function fade(node, { delay = 0, duration = 300, out = false }) {
-    const w = node.getBoundingClientRect().width;
-    const l = out ? !animate_left : animate_left;
-    const m = l ? -2 : 1;
-    return {
-      delay,
-      duration,
-      css: t => {
-        const _t = circInOut(t);
-        return `transform: translateX(${m * w * (1 - _t)}px); opacity: ${t}`;
+  function handleSet(i: number) {
+    return () => {
+      _prev = _active;
+      _active = i;
+      if (!wrap || !_headers[_active]) return;
+      const baseRect = wrap.getBoundingClientRect();
+      const active = _headers[_active];
+      const r = active.getBoundingClientRect();
+      if (ind) {
+        ind.set({
+          x: r.x - baseRect.x,
+          w: r.width,
+        });
       }
     };
   }
+
+  onMount(() => {
+    if (!wrap) return;
+    const baseRect = wrap.getBoundingClientRect();
+    const active = _headers[_active];
+    if (!active) return;
+    const r = active.getBoundingClientRect();
+    ind = spring(
+      {
+        x: r.x - baseRect.x,
+        w: r.width,
+      },
+      {
+        stiffness: 0.1,
+        damping: 0.5,
+      },
+    );
+  });
+
+  function fade(
+    node: HTMLElement,
+    params?: { delay?: number; duration?: number; out?: boolean },
+  ): TransitionConfig {
+    const w = node.getBoundingClientRect().width;
+    const l = params?.out ? !animate_left : animate_left;
+    const m = l ? -2 : 1;
+    return {
+      delay: params?.delay ?? 0,
+      duration: params?.duration ?? 300,
+      css: (t: number) => {
+        const _t = circInOut(t);
+        return `transform: translateX(${m * w * (1 - _t)}px); opacity: ${t}`;
+      },
+    };
+  }
 </script>
+
+<div class="out">
+  <div class="wrap" bind:this={wrap}>
+    <div class="btns">
+      {#each elements as tab, i}
+        <button bind:this={_headers[i]} onclick={handleSet(i)}>
+          {tab.header}
+        </button>
+      {/each}
+    </div>
+    <Indicator left={ind ? $ind?.x : 0} width={ind ? $ind?.w : 0} />
+  </div>
+</div>
+<div class="content-wrap" bind:this={_cw}>
+  {#each elements as tab, i}
+    {#if _active === i}
+      <div class="content" bind:this={_c} in:fade out:fade={{ out: true }}>
+        {tab.component}
+      </div>
+    {/if}
+  {/each}
+</div>
 
 <style>
   div.btns {
@@ -77,7 +124,9 @@
     border-radius: 4px;
     box-sizing: content-box;
     border: solid 2px transparent;
-    transition: border 150ms ease-in-out, background-color 150ms ease-in-out;
+    transition:
+      border 150ms ease-in-out,
+      background-color 150ms ease-in-out;
   }
   div.btns > button:nth-child(n + 2) {
     margin-left: 8px;
@@ -108,25 +157,3 @@
     left: 0;
   }
 </style>
-
-<div class="out">
-  <div class="wrap" bind:this={wrap}>
-    <div class="btns">
-      {#each elements as tab, i}
-        <button bind:this={_headers[i]} on:click={handleSet(i)}>
-          {tab.header}
-        </button>
-      {/each}
-    </div>
-    <Indicator left={ind && $ind.x} width={ind && $ind.w} />
-  </div>
-</div>
-<div class="content-wrap" bind:this={_cw}>
-  {#each elements as tab, i}
-    {#if _active === i}
-      <div class="content" bind:this={_c} in:fade out:fade={{ out: true }}>
-        {tab.component}
-      </div>
-    {/if}
-  {/each}
-</div>

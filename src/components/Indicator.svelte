@@ -1,10 +1,19 @@
-<script>
-  export let left = 0;
-  export let width = 1;
-  let elem;
+<script lang="ts">
+  interface Props {
+    left?: number;
+    width?: number;
+  }
 
-  $: if (elem) elem.style.left = `${left}px`;
-  $: if (elem) elem.style.transform = `scaleX(${width})`;
+  let { left = 0, width = 1 }: Props = $props();
+
+  let elem: HTMLSpanElement | undefined = $state();
+
+  $effect(() => {
+    if (elem) {
+      elem.style.left = `${left}px`;
+      elem.style.transform = `scaleX(${width})`;
+    }
+  });
 </script>
 
 <style>
@@ -33,6 +42,6 @@
 </style>
 
 <div class="indicator">
-  <span bind:this={elem} class="active" />
-  <span class="line" />
+  <span bind:this={elem} class="active"></span>
+  <span class="line"></span>
 </div>

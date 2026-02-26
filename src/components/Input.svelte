@@ -1,16 +1,32 @@
-<script>
-  export let postfix = "";
-  export let error = "";
-  export let value = "";
-  export let disabled = undefined;
-  export let fluid = undefined;
-  export let elem = undefined;
-  function scroll(node, { delay = 50, duration = 100 }) {
+<script lang="ts">
+  import type { HTMLInputAttributes } from 'svelte/elements';
+  import type { TransitionConfig } from 'svelte/transition';
+
+  interface Props extends HTMLInputAttributes {
+    postfix?: string;
+    error?: string;
+    value?: string;
+    disabled?: boolean;
+    fluid?: boolean;
+    elem?: HTMLInputElement;
+  }
+
+  let {
+    postfix = "",
+    error = "",
+    value = $bindable(""),
+    disabled = undefined,
+    fluid = undefined,
+    elem = undefined,
+    ...restProps
+  }: Props = $props();
+
+  function scroll(node: HTMLElement, params?: { delay?: number; duration?: number }): TransitionConfig {
     const height = node.scrollHeight;
     return {
-      delay,
-      duration,
-      css: t => `height: ${t * height}px;`
+      delay: params?.delay ?? 50,
+      duration: params?.duration ?? 100,
+      css: (t: number) => `height: ${t * height}px;`
     };
   }
 </script>
@@ -131,10 +147,8 @@
       <input
         bind:this={elem}
         {disabled}
-        {...$$restProps}
-        bind:value
-        on:change
-        on:click />
+        {...restProps}
+        bind:value />
       {#if postfix}
         <span class="postfix">{postfix}</span>
       {/if}

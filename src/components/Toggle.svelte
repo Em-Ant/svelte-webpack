@@ -1,11 +1,31 @@
-<script>
-  export let disabled = undefined;
-  export let on = undefined;
-  export let error = undefined;
-  export let id = undefined;
-  export let name = undefined;
-  export let attrs = {};
-  export let elem = undefined;
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  interface Props {
+    disabled?: boolean;
+    on?: boolean;
+    error?: boolean;
+    id?: string;
+    name?: string;
+    attrs?: Record<string, unknown>;
+    elem?: HTMLInputElement;
+    children?: Snippet;
+    onchange?: (e: Event) => void;
+    onclick?: (e: MouseEvent) => void;
+  }
+
+  let {
+    disabled = undefined,
+    on = $bindable(undefined),
+    error = undefined,
+    id = undefined,
+    name = undefined,
+    attrs = {},
+    elem = undefined,
+    children,
+    onchange,
+    onclick
+  }: Props = $props();
 </script>
 
 <style>
@@ -105,15 +125,17 @@
       {name}
       bind:this={elem}
       bind:checked={on}
-      on:change
-      on:click
-      aria-invalid={error}
+      onchange={onchange}
+      onclick={onclick}
+      aria-invalid={error ? "true" : undefined}
       type="checkbox" />
     <span class="hole">
-      <span class="toggle" />
+      <span class="toggle"></span>
     </span>
     <span>
-      <slot />
+      {#if children}
+        {@render children()}
+      {/if}
     </span>
   </label>
 </div>
