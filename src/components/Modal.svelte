@@ -3,7 +3,7 @@
   import { fade, fly } from "svelte/transition";
   import { circInOut } from "svelte/easing";
 
-  import cross from "../assets/cross.svg";
+  import cross from "../assets/cross.svg?raw";
 
   export let footer = false;
   export let mobile = false;

@@ -6,10 +6,72 @@
   export let fluid = false;
   export let small = false;
   export let secondary = false;
-  export let type = "button";
+  export let type = 'button';
   export let attrs = {};
   export let elem = undefined;
 </script>
+
+<button
+  class:fluid
+  class:small
+  class:secondary
+  bind:this={elem}
+  on:click
+  {disabled}
+  {id}
+  {type}
+  {...attrs}
+>
+  {#if loading}
+    <svg
+      class="loader"
+      width="18"
+      height="18"
+      version="1.1"
+      viewBox="0 0 4.2333 4.2333"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g transform="translate(-104.98 -184.32)">
+        <path
+          d="m107.09 184.32v0.4717c0.91041 0 1.6426 0.73456 1.6426 1.645 0
+          0.91039-0.73224 1.6431-1.6426 1.6431-0.91039
+          0-1.6431-0.73272-1.6431-1.6431h-0.47356c0 1.1663 0.95033 2.1167 2.1167
+          2.1167s2.1167-0.95034
+          2.1167-2.1167c0-1.1663-0.95034-2.1167-2.1167-2.1167z"
+          color="#000000"
+          color-rendering="auto"
+          dominant-baseline="auto"
+          fill="#fff"
+          image-rendering="auto"
+          shape-rendering="auto"
+          style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;isolation:auto;mix-blend-mode:normal;paint-order:markers
+          fill
+          stroke;shape-padding:0;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"
+        />
+      </g>
+    </svg>
+  {:else if success}
+    <svg
+      class="check"
+      version="1.1"
+      height="24"
+      width="24"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M 6,13.7857 9.25,17 19,8"
+        fill="none"
+        stroke="#fff"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2.6"
+      />
+    </svg>
+  {:else}
+    <slot />
+  {/if}
+</button>
 
 <style>
   @keyframes spin {
@@ -84,7 +146,9 @@
     color: #666;
   }
   button:focus {
-    box-shadow: 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
+    box-shadow:
+      0 0 1px 1px #f2f2f2,
+      0 0 1px 3px rgba(28, 129, 141, 1);
   }
   button > svg.loader {
     animation: spin 1000ms linear infinite;
@@ -98,61 +162,3 @@
     }
   }
 </style>
-
-<button
-  class:fluid
-  class:small
-  class:secondary
-  bind:this={elem}
-  on:click
-  {disabled}
-  {id}
-  {type}
-  {...attrs}>
-  {#if loading}
-    <svg
-      class="loader"
-      width="18"
-      height="18"
-      version="1.1"
-      viewBox="0 0 4.2333 4.2333"
-      xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(-104.98 -184.32)">
-        <path
-          d="m107.09 184.32v0.4717c0.91041 0 1.6426 0.73456 1.6426 1.645 0
-          0.91039-0.73224 1.6431-1.6426 1.6431-0.91039
-          0-1.6431-0.73272-1.6431-1.6431h-0.47356c0 1.1663 0.95033 2.1167 2.1167
-          2.1167s2.1167-0.95034
-          2.1167-2.1167c0-1.1663-0.95034-2.1167-2.1167-2.1167z"
-          color="#000000"
-          color-rendering="auto"
-          dominant-baseline="auto"
-          fill="#fff"
-          image-rendering="auto"
-          shape-rendering="auto"
-          solid-color="#000000"
-          style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;isolation:auto;mix-blend-mode:normal;paint-order:markers
-          fill
-          stroke;shape-padding:0;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal" />
-      </g>
-    </svg>
-  {:else if success}
-    <svg
-      class="check"
-      version="1.1"
-      height="24"
-      width="24"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M 6,13.7857 9.25,17 19,8"
-        fill="none"
-        stroke="#fff"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2.6" />
-    </svg>
-  {:else}
-    <slot />
-  {/if}
-</button>

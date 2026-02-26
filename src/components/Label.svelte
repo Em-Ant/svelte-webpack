@@ -1,6 +1,6 @@
 <script>
   import Tooltip from "./Tooltip.svelte";
-  import infoIcon from "../assets/info_light.svg";
+  import infoIcon from "../assets/info_light.svg?raw";
 
   export let infoOpen = false;
   export let attrs = {};

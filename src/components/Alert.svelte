@@ -1,8 +1,8 @@
 <script>
-  import info from "../assets/info.svg";
-  import danger from "../assets/danger.svg";
-  import warning from "../assets/warning.svg";
-  import success from "../assets/success.svg";
+  import info from "../assets/info.svg?raw";
+  import danger from "../assets/danger.svg?raw";
+  import warning from "../assets/warning.svg?raw";
+  import success from "../assets/success.svg?raw";
   export let type = "info";
   export let fluid = false;
   let warn, err, ok, icon;
