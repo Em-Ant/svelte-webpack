@@ -1,7 +1,24 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
+import { defineConfig, type Plugin } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { execSync } from 'node:child_process';
+
+function versionMetaPlugin(): Plugin {
+  const gitHash = execSync('git rev-parse --short HEAD').toString().trim();
+  const timestamp = new Date().toISOString();
+  const version = `${gitHash}-${timestamp}`;
+
+  return {
+    name: 'version-meta-plugin',
+    transformIndexHtml(html) {
+      return html.replace('<!--VERSION-->', version);
+    },
+    closeBundle() {
+      console.log(`Build: ${version}`);
+    },
+  };
+}
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [svelte()],
-})
+  plugins: [svelte(), versionMetaPlugin()],
+});
