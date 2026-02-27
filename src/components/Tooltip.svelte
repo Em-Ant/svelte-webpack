@@ -1,87 +1,111 @@
-<script>
-  import { onDestroy } from "svelte";
-  import { fade } from "svelte/transition";
-  import { createPopper } from "@popperjs/core";
+<script lang="ts">
+  import { fade } from 'svelte/transition';
+  import { createPopper, type Options } from '@popperjs/core';
+  import { type Snippet, type Component, untrack } from 'svelte';
 
-  export let attrs = {};
-  export let options = {};
-  export let ref = null;
-  export let boundaryElem;
+  interface Props {
+    attrs?: Record<string, unknown>;
+    options?: Partial<Options>;
+    ref?: HTMLElement;
+    boundaryElem?: HTMLElement | 'clippingParents';
+    elem?: Component<{ tooltip?: HTMLElement; children?: Snippet }>;
+    children?: Snippet;
+  }
 
-  /**
-   * custom tooltip element
-   * must bind this to a ref prop,
-   * and accept a slot as children
-   */
-  export let elem = null;
+  let {
+    attrs = {},
+    options = {},
+    ref,
+    boundaryElem,
+    elem: Elem,
+    children,
+  }: Props = $props();
 
-  let tooltip;
-  let popper;
+  let tooltip: HTMLElement | undefined = $state();
+  let popper: ReturnType<typeof createPopper> | null = null;
 
-  const defaults = {
-    placement: "right",
+  const defaults: Options = {
+    placement: 'right',
+    strategy: 'absolute',
     modifiers: [
       {
-        name: "offset",
-        options: {
-          offset: [0, 10]
-        }
+        name: 'offset',
+        options: { offset: [0, 10] },
       },
       {
-        name: "preventOverflow",
+        name: 'preventOverflow',
         options: {
           altAxis: true,
-          boundary: boundaryElem || "clippingParents"
-        }
+          boundary: untrack(() => boundaryElem) || 'clippingParents',
+        },
       },
       {
-        name: "arrow",
-        options: {
-          padding: 2
-        }
+        name: 'arrow',
+        options: { padding: 2 },
       },
       {
-        name: "flip",
+        name: 'flip',
         options: {
           padding: 4,
           fallbackPlacements: [
-            "bottom-start",
-            "bottom",
-            "bottom-end",
-            "top-start",
-            "top",
-            "top-end",
-            "left-start",
-            "left-end",
-            "left"
+            'bottom-start',
+            'bottom',
+            'bottom-end',
+            'top-start',
+            'top',
+            'top-end',
+            'left-start',
+            'left-end',
+            'left',
           ],
-          flipVariations: false
-        }
-      }
-    ]
+          flipVariations: false,
+        },
+      },
+    ],
   };
 
-  $: if (ref && options && tooltip && attrs) {
-    destroy();
-    create();
-  }
+  $effect(() => {
+    if (ref && tooltip) {
+      destroy();
+      create();
+    }
+    return destroy;
+  });
 
   function create() {
     if (ref && tooltip && !popper) {
-      popper = createPopper(ref, tooltip, { ...defaults, options });
+      popper = createPopper(ref, tooltip, {
+        ...defaults,
+        ...options,
+        modifiers: [...defaults.modifiers, ...(options.modifiers ?? [])],
+      });
       popper.update();
     }
   }
+
   function destroy() {
     if (popper) {
       popper.destroy();
       popper = null;
     }
   }
-  onDestroy(function() {
-    destroy();
-  });
 </script>
+
+{#if ref}
+  {#if Elem}
+    <Elem bind:tooltip {children} />
+  {:else}
+    <div
+      {...attrs}
+      transition:fade={{ duration: 150 }}
+      class="tooltip"
+      bind:this={tooltip}
+    >
+      <div data-popper-arrow class="arrow"></div>
+      {@render children?.()}
+    </div>
+  {/if}
+{/if}
 
 <style>
   div.tooltip {
@@ -107,9 +131,8 @@
     height: 12px;
     z-index: -1;
   }
-
   div.arrow::before {
-    content: " ";
+    content: ' ';
     transform: rotate(45deg) scale(0.7);
     background: #282828;
   }
@@ -117,36 +140,16 @@
     opacity: 0 !important;
     pointer-events: none;
   }
-  :global(div.tooltip[data-popper-placement^="top"] > div.arrow) {
+  :global(div.tooltip[data-popper-placement^='top'] > div.arrow) {
     bottom: -6px;
   }
-
-  :global(div.tooltip[data-popper-placement^="bottom"] > div.arrow) {
+  :global(div.tooltip[data-popper-placement^='bottom'] > div.arrow) {
     top: -6px;
   }
-
-  :global(div.tooltip[data-popper-placement^="left"] > div.arrow) {
+  :global(div.tooltip[data-popper-placement^='left'] > div.arrow) {
     right: -6px;
   }
-
-  :global(div.tooltip[data-popper-placement^="right"] > div.arrow) {
+  :global(div.tooltip[data-popper-placement^='right'] > div.arrow) {
     left: -6px;
   }
 </style>
-
-{#if ref}
-  {#if elem}
-    <svelte:component this={elem} bind:ref={tooltip}>
-      <slot />
-    </svelte:component>
-  {:else}
-    <div
-      {attrs}
-      transition:fade={{ duration: 150 }}
-      class="tooltip"
-      bind:this={tooltip}>
-      <div data-popper-arrow class="arrow" />
-      <slot />
-    </div>
-  {/if}
-{/if}
