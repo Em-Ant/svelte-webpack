@@ -1,6 +1,6 @@
 <script lang="ts">
   import Indicator from './Indicator.svelte';
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import { spring, type Spring } from 'svelte/motion';
   import { circInOut } from 'svelte/easing';
   import type { TransitionConfig } from 'svelte/transition';
@@ -20,10 +20,12 @@
 
   let _headers: HTMLButtonElement[] = $state([]);
   let ind: Spring<{ x: number; w: number }> | undefined = $state();
-  let base: number = $state(0);
   let wrap: HTMLDivElement | undefined = $state();
-  let _active = $state((elements.findIndex((d) => d && d.active) + 1 || 1) - 1);
-  let _prev = $state(_active);
+  const initial = untrack(
+    () => (elements.findIndex((d) => d && d.active) + 1 || 1) - 1,
+  );
+  let _active = $state(initial);
+  let _prev = $state(initial);
   let animate_left = $derived(_prev >= _active);
   let _cw: HTMLDivElement | undefined = $state();
   let _c: HTMLDivElement | undefined = $state();

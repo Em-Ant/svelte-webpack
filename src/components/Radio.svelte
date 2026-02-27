@@ -43,6 +43,7 @@
       {id}
       {value}
       {name}
+      data-invalid={error}
       bind:this={elem}
       checked={!!group && group === value}
       onchange={(e) => {
@@ -127,11 +128,11 @@
   input:checked + span.icon:after {
     transform: scale(1);
   }
-  input[aria-invalid='true'] + span.icon {
+  input[data-invalid='true'] + span.icon {
     border: 2px solid #bb1b18;
     background-color: white;
   }
-  input[aria-invalid='true']:checked + span.icon:after {
+  input[data-invalid='true']:checked + span.icon:after {
     background-color: #bb1b18;
   }
   input:disabled + span.icon {
