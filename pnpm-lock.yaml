@@ -9,26 +9,23 @@ importers:
   .:
     dependencies:
       '@popperjs/core':
-        specifier: ^2.11.6
+        specifier: ^2.11.8
         version: 2.11.8
-      '@sveltejs/pancake':
-        specifier: 0.0.18
-        version: 0.0.18
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
-        specifier: ^6.2.1
+        specifier: ^6.2.4
         version: 6.2.4(svelte@5.53.5)(vite@7.3.1(@types/node@24.10.15)(terser@5.46.0))
       '@tsconfig/svelte':
-        specifier: ^5.0.6
+        specifier: ^5.0.8
         version: 5.0.8
       '@types/node':
         specifier: ^24.10.1
         version: 24.10.15
       svelte:
-        specifier: ^5.45.2
+        specifier: ^5.53.5
         version: 5.53.5
       svelte-check:
-        specifier: ^4.3.4
+        specifier: ^4.4.4
         version: 4.4.4(picomatch@4.0.3)(svelte@5.53.5)(typescript@5.9.3)
       typescript:
         specifier: ~5.9.3
@@ -360,9 +357,6 @@ packages:
     peerDependencies:
       acorn: ^8.9.0
 
-  '@sveltejs/pancake@0.0.18':
-    resolution: {integrity: sha512-vnpKn+sHE0yvw/6x4juF9EoDS8iYC5JNIVtRgclA37rfxdnIpvbVxStiZ5/gWncjERN4jtSpTAplS1zCARCBXA==}
-
   '@sveltejs/vite-plugin-svelte-inspector@5.0.2':
     resolution: {integrity: sha512-TZzRTcEtZffICSAoZGkPSl6Etsj2torOVrx6Uw0KpXxrec9Gg6jFWQ60Q3+LmNGfZSxHRCZL7vXVZIWmuV50Ig==}
     engines: {node: ^20.19 || ^22.12 || >=24}
@@ -582,9 +576,6 @@ packages:
       vite:
         optional: true
 
-  yootils@0.0.16:
-    resolution: {integrity: sha512-aIVecm5ucOzwhtKbl0zkfg0ZSOUR9c2da0k8cIc9umjjzkvVCWUUX/UHZ1CLPsv4wmJLqt0aWeLB7p9n9JDwYQ==}
-
   zimmerframe@1.1.4:
     resolution: {integrity: sha512-B58NGBEoc8Y9MWWCQGl/gq9xBCe4IiKM0a2x7GZdQKOW5Exr8S1W24J6OgM1njK8xCRGvAJIL/MxXHf6SkmQKQ==}
 
@@ -773,10 +764,6 @@ snapshots:
   '@sveltejs/acorn-typescript@1.0.9(acorn@8.16.0)':
     dependencies:
       acorn: 8.16.0
-
-  '@sveltejs/pancake@0.0.18':
-    dependencies:
-      yootils: 0.0.16
 
   '@sveltejs/vite-plugin-svelte-inspector@5.0.2(@sveltejs/vite-plugin-svelte@6.2.4(svelte@5.53.5)(vite@7.3.1(@types/node@24.10.15)(terser@5.46.0)))(svelte@5.53.5)(vite@7.3.1(@types/node@24.10.15)(terser@5.46.0))':
     dependencies:
@@ -1007,7 +994,5 @@ snapshots:
   vitefu@1.1.2(vite@7.3.1(@types/node@24.10.15)(terser@5.46.0)):
     optionalDependencies:
       vite: 7.3.1(@types/node@24.10.15)(terser@5.46.0)
-
-  yootils@0.0.16: {}
 
   zimmerframe@1.1.4: {}
