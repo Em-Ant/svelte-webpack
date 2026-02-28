@@ -1,32 +1,37 @@
 name: Deploy
-
 on:
   push:
     branches: [main]
-
 jobs:
   build:
     runs-on: ubuntu-latest
     if: "!contains(toJSON(github.event.commits.*.message), '[skip-ci]')"
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           cache: 'pnpm'
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
       - name: Check Types
         run: pnpm run check
+
       - name: Run Tests
         run: pnpm run test:run
+
       - name: Build
         run: pnpm run build
+
       - name: Simple FTP deploy
         uses: sebastianpopp/ftp-action@releases/v2
         with:
