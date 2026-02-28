@@ -30,7 +30,7 @@ jobs:
         run: pnpm run test
 
       - name: Build
-        run: pnpm run build
+        run: BASE_PATH=/svelte/ pnpm run build
 
       - name: Simple FTP deploy
         uses: sebastianpopp/ftp-action@releases/v2

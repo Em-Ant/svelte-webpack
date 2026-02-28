@@ -22,4 +22,5 @@ function versionMetaPlugin(): Plugin {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svelte(), versionMetaPlugin()],
+  base: process.env.BASE_PATH ? process.env.BASE_PATH : '/',
 });
