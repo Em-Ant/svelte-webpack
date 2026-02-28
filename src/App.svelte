@@ -4,7 +4,7 @@
   import Button from './components/Button.svelte';
   import Input from './components/Input.svelte';
   import { Accordion, Row } from './components/Accordion';
-  import Select from './components/Select.svelte';
+  import Select, { type Option } from './components/Select.svelte';
   import Alert from './components/Alert.svelte';
   import Toggle from './components/Toggle.svelte';
   import Modal from './components/Modal.svelte';
@@ -22,9 +22,12 @@
   let value = $state('');
   let input = $state<HTMLInputElement | undefined>(undefined);
 
-  let sliderVal = $state(0);
-
-  let options = ['option 1', 'option 2', 'option 3', 'option 4'];
+  let options: Option[] = [
+    { name: 'option 1', value: '1' },
+    { name: 'option 2', value: '2' },
+    { name: 'option 3', value: '3' },
+    { name: 'option 4', value: '4' },
+  ];
 
   let footer = $state(false);
   let open = $state(false);
@@ -62,7 +65,13 @@
       {#snippet header()}
         <h3>Modal</h3>
       {/snippet}
-      <div class="t" onclick={() => (footer = !footer)}></div>
+      <div
+        tabindex="-1"
+        role="button"
+        class="t"
+        onclick={() => (footer = !footer)}
+        onkeypress={() => {}}
+      ></div>
       {#snippet footerSlot()}
         <div class="btn">
           <Button fluid onclick={click} {loading} {success} {disabled}>
@@ -92,14 +101,7 @@
       {/snippet}
     </Label>
     <Select {options} name="select" {disabled} error={err} />
-    <Input
-      name="input"
-      bind:elem={input}
-      {disabled}
-      error={err}
-      bind:value
-      postfix="$"
-    />
+    <Input name="input" {disabled} error={err} bind:value postfix="$" />
     <Button {disabled} secondary={on} type="submit">Submit</Button>
   </form>
   <div class="wrap pad">
@@ -133,8 +135,10 @@
       ]}
     />
     <div style="height: 60px;"></div>
-    <Slider step={10} bind:value={sliderVal}>
-      <span slot="popover">{`${sliderVal} %`}</span>
+    <Slider step={10}>
+      {#snippet bubble(sliderVal: number)}
+        <span>{`${sliderVal} %`}</span>
+      {/snippet}
     </Slider>
   </div>
 </main>

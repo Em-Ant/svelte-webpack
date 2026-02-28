@@ -1,27 +1,82 @@
-<script>
-  import { getContext } from 'svelte';
-	import { ACCORDION } from './Accordion.svelte';
+<script lang="ts">
+  import type { TransitionConfig } from 'svelte/transition';
+  import { getContext, type Snippet } from 'svelte';
+  import { ACCORDION, type AccordionContext } from './Accordion.svelte';
+  import type { MouseEventHandler } from 'svelte/elements';
 
   const row = {};
-	const { registerRow, toggle, active } = getContext(ACCORDION);
+  const { registerRow, toggle, active } =
+    getContext<AccordionContext>(ACCORDION);
   registerRow(row);
 
+  interface Props {
+    children?: Snippet;
+    header: Snippet;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
+  }
+  interface ScrollParams {
+    delay?: number;
+    duration?: number;
+  }
 
-  function scroll(node, { delay = 0, duration = 200 }) {
+  let { header, children, onClick }: Props = $props();
+
+  function scroll(
+    node: HTMLElement,
+    { delay = 0, duration = 200 }: ScrollParams = {},
+  ): TransitionConfig {
     const height = node.scrollHeight;
     return {
       delay,
       duration,
-      css: t => `height: ${t * height}px;`
+      css: (t: number) => `height: ${t * height}px;`,
     };
   }
 
-  const handleClick = () => {
+  const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     toggle(row);
+    onClick?.(e);
   };
-  
-  $: open = $active === row;
+
+  let open = $derived($active === row);
 </script>
+
+<button class:open type="button" onclick={handleClick}>
+  <span class="signal"></span>
+  {@render header?.()}
+  <span class="arrow">
+    <svg
+      width="16"
+      height="8"
+      version="1.1"
+      viewBox="0 0 4.2333 2.1167"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g transform="translate(-89.648 -153.89)">
+        <path
+          d="m93.881 154.08a0.19308 0.19277 0 0 0-0.32364-0.13237l-1.7878
+          1.6059-1.7898-1.6059a0.19308 0.19277 0 1 0-0.25736 0.28613l1.9184
+          1.7227a0.19308 0.19277 0 0 0 0.25734 0l1.9184-1.7227a0.19308 0.19277 0
+          0 0 0.06428-0.15379z"
+          color="#000000"
+          color-rendering="auto"
+          dominant-baseline="auto"
+          fill="#282828"
+          image-rendering="auto"
+          shape-rendering="auto"
+          style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;isolation:auto;mix-blend-mode:normal;paint-order:markers
+          fill
+          stroke;shape-padding:0;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal"
+        />
+      </g>
+    </svg>
+  </span>
+</button>
+{#if open}
+  <div transition:scroll class="content">
+    {@render children?.()}
+  </div>
+{/if}
 
 <style>
   button {
@@ -34,7 +89,7 @@
     width: 100%;
     cursor: pointer;
     position: relative;
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Open Sans', sans-serif;
     color: #282828;
     padding: 0 32px 0 8px;
     text-align: left;
@@ -68,7 +123,7 @@
     fill: #bb1b18;
   }
   button:after {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     bottom: 0;
@@ -120,43 +175,3 @@
     outline-offset: 1px;
   }
 </style>
-
-<button
-  class:open
-  type="button"
-  on:click
-  on:click={handleClick}>
-  <span class="signal" />
-  <slot name="header"></slot>
-  <span class="arrow">
-    <svg
-      width="16"
-      height="8"
-      version="1.1"
-      viewBox="0 0 4.2333 2.1167"
-      xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(-89.648 -153.89)">
-        <path
-          d="m93.881 154.08a0.19308 0.19277 0 0 0-0.32364-0.13237l-1.7878
-          1.6059-1.7898-1.6059a0.19308 0.19277 0 1 0-0.25736 0.28613l1.9184
-          1.7227a0.19308 0.19277 0 0 0 0.25734 0l1.9184-1.7227a0.19308 0.19277 0
-          0 0 0.06428-0.15379z"
-          color="#000000"
-          color-rendering="auto"
-          dominant-baseline="auto"
-          fill="#282828"
-          image-rendering="auto"
-          shape-rendering="auto"
-          solid-color="#000000"
-          style="font-feature-settings:normal;font-variant-alternates:normal;font-variant-caps:normal;font-variant-ligatures:normal;font-variant-numeric:normal;font-variant-position:normal;isolation:auto;mix-blend-mode:normal;paint-order:markers
-          fill
-          stroke;shape-padding:0;text-decoration-color:#000000;text-decoration-line:none;text-decoration-style:solid;text-indent:0;text-orientation:mixed;text-transform:none;white-space:normal" />
-      </g>
-    </svg>
-  </span>
-</button>
-{#if open}
-  <div transition:scroll class="content">
-    <slot />
-  </div>
-{/if}

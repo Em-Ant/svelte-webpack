@@ -1,16 +1,36 @@
-<script>
-  import { onMount, onDestroy } from 'svelte';
+<script lang="ts">
+  import { onMount, onDestroy, type Snippet } from 'svelte';
+  import type {
+    ChangeEventHandler,
+    MouseEventHandler,
+    HTMLAttributes,
+  } from 'svelte/elements';
 
-  export let  min = 0;
-  export let max = 100;
-  export let step = 1;
-  export let value = 0;
-  let showPopover = $$slots.popover;
+  interface Props extends HTMLAttributes<HTMLInputElement> {
+    min?: number;
+    max?: number;
+    step?: number;
+    value?: number;
+    bubble?: Snippet<[number]>;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
+    onClick?: MouseEventHandler<HTMLInputElement>;
+  }
 
-  let progress;
-  let arrow;
-  let wrap;
-  let popover;
+  let {
+    min = 0,
+    max = 100,
+    step = 1,
+    value = $bindable(0),
+    onChange,
+    onClick,
+    bubble: _popover,
+    ...attrs
+  }: Props = $props();
+
+  let progress: HTMLDivElement;
+  let wrap: HTMLDivElement;
+  let arrow: HTMLSpanElement | null = $state(null);
+  let popover: HTMLDivElement | null = $state(null);
 
   const getData = () => {
     return {
@@ -18,13 +38,21 @@
       arrow,
       popover,
       wrap,
-      value
-    }
+      value,
+    };
+  };
+
+  interface PositionData {
+    x?: number;
+    wrapLeft?: number;
+    wrapRight?: number;
+    wrapWidth?: number;
+    popoverWidth?: number;
   }
 
-  function getPosition(value, wrap) {
-    const out = {}
-    if(wrap) {
+  function getPosition(value: number, wrap: HTMLDivElement): PositionData {
+    const out: PositionData = {};
+    if (wrap) {
       const ratio = value / (max - min);
       const adjustment = 16 - 32 * ratio;
       const { width, left, right } = wrap.getBoundingClientRect();
@@ -38,33 +66,61 @@
       out.popoverWidth = width;
     }
     return out;
-  };
+  }
 
-  function setDynamicStyles(value, wrap, progress, popover, arrow) {
-    const {x, popoverWidth, wrapRight, wrapLeft } = getPosition(value, wrap);
+  function setDynamicStyles(
+    value: number,
+    wrap: HTMLDivElement,
+    progress: HTMLDivElement,
+    popover: HTMLDivElement | null,
+    arrow: HTMLSpanElement | null,
+  ) {
+    const { x, popoverWidth, wrapRight, wrapLeft } = getPosition(value, wrap);
     if (arrow) arrow.style.left = `${x}px`;
     if (progress) progress.style.width = `${x}px`;
     if (popover) {
-      popover.style.left = `${x - popoverWidth / 2}px`;
+      popover.style.left = `${x! - popoverWidth! / 2}px`;
       const { left, right } = popover.getBoundingClientRect();
-      if (right > wrapRight) {
-        popover.style.left = `${x - popoverWidth / 2 - (right - wrapRight)}px`;
+      if (right > wrapRight!) {
+        popover.style.left = `${x! - popoverWidth! / 2 - (right - wrapRight!)}px`;
       }
-      if (left < wrapLeft) {
+      if (left < wrapLeft!) {
         popover.style.left = '0';
       }
     }
   }
   const onResize = () => {
-    const {value, wrap, progress, popover, arrow} = getData();
+    const { value, wrap, progress, popover, arrow } = getData();
     setDynamicStyles(value, wrap, progress, popover, arrow);
-  }
+  };
   onMount(() => window.addEventListener('resize', onResize));
   onDestroy(() => window.removeEventListener('resize', onResize));
 
-  $: setDynamicStyles(value, wrap, progress, popover, arrow);
-
+  $effect(() => setDynamicStyles(value, wrap, progress, popover, arrow));
 </script>
+
+<div class="outer">
+  <div class="wrap" class:mt={!!_popover} bind:this={wrap}>
+    {#if !!_popover}
+      <span class="arrow" bind:this={arrow}></span>
+      <div class="popover" bind:this={popover}>
+        {@render _popover(value)}
+      </div>
+    {/if}
+    <div class="track"></div>
+    <div class="progress" bind:this={progress}></div>
+    <input
+      type="range"
+      {min}
+      {max}
+      {step}
+      onchange={onChange}
+      onclick={onClick}
+      bind:value
+      {...attrs}
+    />
+  </div>
+</div>
 
 <style>
   div.track {
@@ -92,6 +148,7 @@
     height: 32px;
     margin: 0;
     padding: 0;
+    appearance: none;
     -webkit-appearance: none;
     width: 100%;
 
@@ -116,7 +173,9 @@
     border-radius: 50%;
     border: 7px solid #fff;
     background: #1c818d;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.14), 0px 6px 8px rgba(0, 0, 0, 0.12);
+    box-shadow:
+      0px 4px 6px rgba(0, 0, 0, 0.14),
+      0px 6px 8px rgba(0, 0, 0, 0.12);
     cursor: pointer;
   }
   input[type='range']::-moz-range-thumb {
@@ -126,8 +185,10 @@
     border-radius: 50%;
     border: 7px solid #fff;
     background: #1c818d;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.14), 0px 6px 8px rgba(0, 0, 0, 0.12);
-    cursor: pointer;    
+    box-shadow:
+      0px 4px 6px rgba(0, 0, 0, 0.14),
+      0px 6px 8px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
   }
   input[type='range']::-ms-thumb {
     box-sizing: border-box;
@@ -136,7 +197,9 @@
     border-radius: 50%;
     border: 7px solid #fff;
     background: #1c818d;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.14), 0px 6px 8px rgba(0, 0, 0, 0.12);
+    box-shadow:
+      0px 4px 6px rgba(0, 0, 0, 0.14),
+      0px 6px 8px rgba(0, 0, 0, 0.12);
     cursor: pointer;
   }
   div.wrap {
@@ -152,7 +215,10 @@
   }
 
   div.wrap:focus-within > div.track {
-    box-shadow: inset 3px 3px 4px -1px rgba(0, 0, 0, 0.4), 0 0 1px 1px #f2f2f2, 0 0 1px 3px rgba(28, 129, 141, 1);
+    box-shadow:
+      inset 3px 3px 4px -1px rgba(0, 0, 0, 0.4),
+      0 0 1px 1px #f2f2f2,
+      0 0 1px 3px rgba(28, 129, 141, 1);
   }
   div.popover {
     position: relative;
@@ -186,26 +252,3 @@
     margin-bottom: 8px;
   }
 </style>
-
-<div class="outer">
-  <div class="wrap" class:mt={showPopover} bind:this={wrap}>
-    {#if showPopover}
-      <span class="arrow" bind:this={arrow} />
-      <div class="popover" bind:this={popover}>
-        <slot name="popover"></slot>
-      </div>
-    {/if}
-    <div class="track" />
-    <div class="progress" bind:this={progress}/>
-    <input
-      type="range"
-      min={min}
-      max={max}
-      step={step}
-      on:change
-      on:click
-      bind:value
-      {...$$restProps}
-    />
-  </div>
-</div>

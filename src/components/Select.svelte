@@ -1,18 +1,17 @@
 <script lang="ts">
   import { tick } from 'svelte';
+  import type { HTMLAttributes } from 'svelte/elements';
   import type { TransitionConfig } from 'svelte/transition';
-  import Button from './Button.svelte';
 
-  interface Option {
-    name?: string;
-    value?: string;
+  export interface Option {
+    name: string;
+    value: string;
     key?: string;
-    [key: string]: unknown;
   }
 
-  interface Props {
+  interface Props extends HTMLAttributes<HTMLInputElement> {
     options?: Option[];
-    value?: Option | string;
+    value?: string;
     elem?: HTMLInputElement;
     error?: string | boolean;
     fluid?: boolean;
@@ -30,13 +29,16 @@
     fluid = false,
     disabled = false,
     name = 'select',
-    attrs = {},
     onclick,
+    ...attrs
   }: Props = $props();
 
   let open = $state(false);
 
-  function enter(node: HTMLElement, params?: { delay?: number; duration?: number }): TransitionConfig {
+  function enter(
+    node: HTMLElement,
+    params?: { delay?: number; duration?: number },
+  ): TransitionConfig {
     const height = node.scrollHeight;
     return {
       delay: params?.delay ?? 0,
@@ -45,21 +47,21 @@
     };
   }
 
-  let active: Option | string | undefined = $state();
+  let active: string | undefined = $state();
   let optionsElems: HTMLParagraphElement[] = $state([]);
 
   function next() {
     if (!options.length) return;
     if (active === undefined) {
-      value ? (active = value) : (active = options[0]);
+      value ? (active = value) : (active = options[0]?.value);
       return;
     }
-    const i = options.indexOf(active as Option);
+    const i = options.findIndex((opt) => opt.value === active);
     if (i === options.length - 1) {
-      active = options[0];
+      active = options[0].value;
       optionsElems[0]?.scrollIntoView();
     } else {
-      active = options[i + 1];
+      active = options[i + 1]?.value;
       optionsElems[i + 1]?.scrollIntoView();
     }
   }
@@ -67,15 +69,15 @@
   function prev() {
     if (!options.length) return null;
     if (active === undefined) {
-      value ? (active = value) : (active = options[0]);
+      value ? (active = value) : (active = options[0].value);
       return;
     }
-    const i = options.indexOf(active as Option);
+    const i = options.findIndex((opt) => opt.value === active);
     if (i === 0) {
-      active = options[options.length - 1];
+      active = options[options.length - 1].value;
       optionsElems[options.length - 1]?.scrollIntoView();
     } else {
-      active = options[i - 1];
+      active = options[i - 1].value;
       optionsElems[i - 1]?.scrollIntoView();
     }
   }
@@ -96,9 +98,9 @@
 
   async function selectActive(e?: MouseEvent) {
     e?.preventDefault();
-    value = active as Option | string;
+    value = active;
     active = undefined;
-    await tick;
+    await tick();
     open = false;
   }
 
@@ -125,11 +127,8 @@
     }
   }
 
-  function getValueName(opt: Option | string): string {
-    if (opt && typeof opt === 'object' && 'name' in opt) {
-      return (opt as Option).name || '';
-    }
-    return String(opt || '');
+  function getValueName(opt?: string): string {
+    return options.find((o) => o.value === opt)?.name ?? opt ?? '';
   }
 </script>
 
@@ -150,7 +149,7 @@
         elem?.focus();
       }}
     >
-      <span class="value">{getValueName(value as Option | string)}</span>
+      <span class="value">{getValueName(value)}</span>
       <input
         {name}
         {...attrs}
@@ -158,7 +157,7 @@
         onblur={close}
         bind:this={elem}
         readonly
-        value={getValueName(value as Option | string)}
+        {value}
         onkeydown={handleKeyPress}
       />
       <span class="icon" class:open>
@@ -202,15 +201,15 @@
           tabindex="-1"
           role="button"
           bind:this={optionsElems[i]}
-          class:selected={opt === value}
-          class:active={opt === active}
+          class:selected={opt.value === value}
+          class:active={opt.value === active}
           onmouseenter={(e) => {
             e.preventDefault();
-            active = opt;
+            active = opt.value;
           }}
           onmousedown={selectActive}
         >
-          {getValueName(opt)}
+          {opt.name}
         </div>
       {/each}
     </div>
