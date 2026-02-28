@@ -33,11 +33,7 @@
     {@html icon}
   </span>
   <div class="content">
-    <div>
-      {#if children}
-        {@render children()}
-      {/if}
-    </div>
+    {@render children?.()}
   </div>
 </div>
 
